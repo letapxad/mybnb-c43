@@ -1,4 +1,4 @@
-# Instrucitons to complie and run the project
+# Instructions to complie and run the project
 
 clone the repository
 ```
