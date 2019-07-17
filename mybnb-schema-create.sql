@@ -1,0 +1,4 @@
+create table host (sin integer not null, active bit, first_name varchar(255), last_name varchar(255), occupation varchar(255), primary key (sin)) engine=InnoDB
+create table listing (listing_id integer not null auto_increment, active bit not null, country varchar(255), latitude double precision not null, listed_on date, longitude double precision not null, name varchar(255), postal_code varchar(255), street_name integer not null, street_num integer not null, type varchar(255), unit varchar(255), host_sin integer, primary key (listing_id)) engine=InnoDB
+create table renter (sin integer not null, active bit, first_name varchar(255), last_name varchar(255), occupation varchar(255), card_num bigint, exp_date date, primary key (sin)) engine=InnoDB
+alter table listing add constraint FK6n9wffdlem39mvju15xy9u5o7 foreign key (host_sin) references host (sin)
