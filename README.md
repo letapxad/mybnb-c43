@@ -14,6 +14,24 @@ run the jar file
 ```
 java -jar target/mybnb-c43.jar
 ```
+# Instructions on pushing the code
+
+```
+a) git pull origin master (this my lead to merge conflict)
+      >Two types of merge conflit
+      i) we worked on the same file but git was able to fix it for us
+          1) a window opens in nano editor to leave a comment on the merge
+          2) press ctrl + O , press enter key, press ctrl + X (this save the merge message)
+          3) merge is finished ready to add, commit and push
+      ii) we worked on same file and same lines and git can't fix it (this is unlikely in our situation)
+          1) read this <https://www.atlassian.com/git/tutorials/using-branches/merge-conflicts>
+             jump to the explaination under "How to identify merge conflicts"
+b) git add . (in the root of the project)
+c) git commit -m "a message"
+d) git push origin master
+```
+
+
 
 
 # Instructions on what to do to test DB on java code change
