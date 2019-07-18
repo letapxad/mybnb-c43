@@ -1,12 +1,14 @@
 package com.mybnb.app.models;
 
 import java.sql.Date;
-
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 
 @Entity
 public class Listing {
@@ -28,6 +30,12 @@ public class Listing {
 
 	@ManyToOne
 	private Host host;
+	
+	@OneToMany(mappedBy="listing")
+    private List<Availability> availabilities;
+	
+	@ManyToMany
+	private List<Amenity> amenities;
 
 	public int getListing_id() {
 		return listing_id;
