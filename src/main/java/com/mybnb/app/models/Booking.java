@@ -29,6 +29,7 @@ public class Booking {
   private Status status;
   private Date start_date;
   private Date end_date;
+  private float cost;
   
   @Id
   @ManyToOne

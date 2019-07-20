@@ -22,7 +22,7 @@ public class Amenity {
   @Enumerated(EnumType.STRING)
   private Names name;
   
-  @ManyToMany(mappedBy="aminities")
+  @ManyToMany(mappedBy="amenities")
   private List<Listing> listings;
   
   public List<Listing> getListings() {
