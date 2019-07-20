@@ -15,6 +15,15 @@ public class Host extends User{
 	 * no need to define a separate 
 	 * relationship this will be auto generated
 	 */
+	
 	@OneToMany(mappedBy="host")
 	private List<Listing> listings;
+
+	public List<Listing> getListings() {
+		return listings;
+	}
+
+	public void setListings(List<Listing> listings) {
+		this.listings = listings;
+	}
 }

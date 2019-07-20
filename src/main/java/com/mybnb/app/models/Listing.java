@@ -6,16 +6,18 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.ManyToMany;
 
 @Entity
+@IdClass(ListingId.class)
 public class Listing {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int listing_id;
+	private int id;
 	private double longitude;
 	private double latitude;
 	private String type;
@@ -28,6 +30,7 @@ public class Listing {
 	private boolean active;
 	private String name;
 
+	@Id
 	@ManyToOne
 	private Host host;
 	
@@ -36,13 +39,8 @@ public class Listing {
 	
 	@ManyToMany
 	private List<Amenity> amenities;
-
-	public int getListing_id() {
-		return listing_id;
-	}
-	public void setListing_id(int listing_id) {
-		this.listing_id = listing_id;
-	}
+	
+	
 	public double getLongitude() {
 		return longitude;
 	}
@@ -108,6 +106,30 @@ public class Listing {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public Host getHost() {
+		return host;
+	}
+	public void setHost(Host host) {
+		this.host = host;
+	}
+//	public List<Availability> getAvailabilities() {
+//		return availabilities;
+//	}
+//	public void setAvailabilities(List<Availability> availabilities) {
+//		this.availabilities = availabilities;
+//	}
+	public List<Amenity> getAmenities() {
+		return amenities;
+	}
+	public void setAmenities(List<Amenity> amenities) {
+		this.amenities = amenities;
 	}
 	
 	
