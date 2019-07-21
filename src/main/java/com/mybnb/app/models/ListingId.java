@@ -18,6 +18,26 @@ public class ListingId implements Serializable {
         this.host = host;
         this.id = id;
     }
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public Host getHost() {
+		return host;
+	}
+
+	public void setHost(Host host) {
+		this.host = host;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
  
     // equals() and hashCode()
 }

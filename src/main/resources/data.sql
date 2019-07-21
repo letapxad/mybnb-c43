@@ -1,6 +1,5 @@
 
 use mybnbauto;
-
 insert into host (active, first_name, last_name, occupation, sin) 
 	values 
 		(1, "Dax", "Patel", "Student", 123456785),
@@ -23,7 +22,7 @@ insert into amenity (name)
 		("Drawers"),
 		("TV"), 
 		("Heat"),
-		("Air_conditioning"), 
+		("Air_Conditioning"), 
 		("Breakfast");
 
 insert into listing (id, active, country, latitude, listed_on, longitude, name, postal_code, street_name, street_num, type, unit, host_sin) 

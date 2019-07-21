@@ -1,6 +1,7 @@
 package com.mybnb.app.models;
 
-import java.sql.Date;
+import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,12 +9,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.ManyToMany;
 
 @Entity
-@IdClass(ListingId.class)
+@IdClass(Listing.ListingId.class)
 public class Listing {
 	
 	@Id
@@ -27,6 +29,8 @@ public class Listing {
   public void setAvailabilities(List<Availability> availabilities) {
     this.availabilities = availabilities;
   }
+  
+  
   private double latitude;
 	private String type;
 	private int street_num;
@@ -49,6 +53,8 @@ public class Listing {
 	@ManyToMany
 	private List<Amenity> amenities;
 	
+	public Listing(){
+	}
 	
 	public double getLongitude() {
 		return longitude;
@@ -122,6 +128,8 @@ public class Listing {
 	public void setId(int id) {
 		this.id = id;
 	}
+	
+	
 	public Host getHost() {
 		return host;
 	}
@@ -142,4 +150,45 @@ public class Listing {
 	}
 	
 	
+	
+	static public class ListingId implements Serializable {
+	    /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		
+		private int id;
+		
+		
+	    private Host host;
+	 
+	    // default constructor
+	 
+	    public ListingId() {
+	    	
+	    }
+	    
+
+
+		public ListingId(int id, Host host ) {
+	        this.host = host;
+	        this.id = id;
+	    }
+
+		public int getId() {
+			return id;
+		}
+
+		public void setId(int id) {
+			this.id = id;
+		}
+
+
+		public static long getSerialversionuid() {
+			return serialVersionUID;
+		}
+	 
+	    // equals() and hashCode()
+	}
 }

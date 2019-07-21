@@ -136,5 +136,9 @@ public class SQLController {
 		}
 		return rows;
 	}
+	
+	public static void main(String[] args) {
+		System.out.println("checking faker");
+	}
 
 }

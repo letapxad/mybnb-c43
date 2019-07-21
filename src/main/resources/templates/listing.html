@@ -5,12 +5,10 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-<h1>List of hosts</h1>
-  <table>
-    <tr th:each="host: ${hosts}">
-	    <td th:text="${host.SIN}" />
-	    <td th:text="${host.first_name}" />
-	</tr>
-</table>
+
+
+<h1 th:text="${listing.name}">title</h1>
+
+
 </body>
 </html>
