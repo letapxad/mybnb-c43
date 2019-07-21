@@ -1,6 +1,7 @@
 package com.mybnb.app.models;
 
 
+import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
@@ -12,7 +13,9 @@ public class User {
 	private String first_name;
 	private String last_name;
 	private String occupation;
+	@Column(columnDefinition = "TINYINT")
 	private Boolean active;
+	
 	public int getSIN() {
 		return SIN;
 	}
