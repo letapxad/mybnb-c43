@@ -2,6 +2,7 @@ package com.mybnb.app.models;
 
 import java.sql.Date;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,14 +20,22 @@ public class Listing {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	private double longitude;
-	private double latitude;
+	
+	public List<Availability> getAvailabilities() {
+    return availabilities;
+  }
+  public void setAvailabilities(List<Availability> availabilities) {
+    this.availabilities = availabilities;
+  }
+  private double latitude;
 	private String type;
 	private int street_num;
-	private int street_name;
+	private String street_name;
 	private String unit;
 	private String postal_code;
 	private String country;
 	private Date listed_on;
+	@Column(columnDefinition = "TINYINT")
 	private boolean active;
 	private String name;
 
@@ -65,10 +74,10 @@ public class Listing {
 	public void setStreet_num(int street_num) {
 		this.street_num = street_num;
 	}
-	public int getStreet_name() {
+	public String getStreet_name() {
 		return street_name;
 	}
-	public void setStreet_name(int street_name) {
+	public void setStreet_name(String street_name) {
 		this.street_name = street_name;
 	}
 	public String getUnit() {

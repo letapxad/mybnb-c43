@@ -71,4 +71,16 @@ public class Booking {
 	public void setRenter(Renter renter) {
 		this.renter = renter;
 	}
+  public float getCost() {
+    return cost;
+  }
+  public void setCost(float cost) {
+    this.cost = cost;
+  }
+  public Listing getListing() {
+    return listing;
+  }
+  public void setListing(Listing listing) {
+    this.listing = listing;
+  }
 }

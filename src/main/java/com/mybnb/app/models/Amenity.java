@@ -27,13 +27,13 @@ public class Amenity {
   
   public List<Listing> getListings() {
 	return listings;
-}
-public void setListings(List<Listing> listings) {
-	this.listings = listings;
-}
-public Names getName() {
-    return name;
   }
+  public void setListings(List<Listing> listings) {
+  	this.listings = listings;
+  }
+  public Names getName() {
+      return name;
+    }
   public void setName(Names name) {
     this.name = name;
   }
