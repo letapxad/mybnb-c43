@@ -11,7 +11,7 @@ public class UserId implements Serializable {
      */
     private static final long serialVersionUID = 1L;
 
-    //@GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int id;
     private int SIN;
  
@@ -28,13 +28,5 @@ public class UserId implements Serializable {
       SIN = sIN;
     }
 
-    public int getId() {
-      return id;
-    }
-
-    public void setId(int id) {
-      this.id = id;
-    }
- 
     // equals() and hashCode()
 }
