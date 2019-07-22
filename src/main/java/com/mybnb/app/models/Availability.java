@@ -10,6 +10,7 @@ import javax.persistence.ManyToOne;
 @IdClass(AvailabilityId.class)
 public class Availability {
   
+  @Id
   private Date date;
   private float price;
   

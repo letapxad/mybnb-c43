@@ -27,8 +27,7 @@ public class Booking {
   
   @Enumerated(EnumType.STRING)
   private Status status;
-  private Date start_date;
-  private Date end_date;
+  private Date date;
   private float cost;
   
   @Id
@@ -45,19 +44,6 @@ public class Booking {
   }
   public void setStatus(Status status) {
     this.status = status;
-  }
-  
-  public Date getStart_date() {
-    return start_date;
-  }
-  public void setStart_date(Date start_date) {
-    this.start_date = start_date;
-  }
-  public Date getEnd_date() {
-    return end_date;
-  }
-  public void setEnd_date(Date end_date) {
-    this.end_date = end_date;
   }
 	public int getId() {
 		return id;
@@ -82,5 +68,11 @@ public class Booking {
   }
   public void setListing(Listing listing) {
     this.listing = listing;
+  }
+  public Date getDate() {
+    return date;
+  }
+  public void setDate(Date date) {
+    this.date = date;
   }
 }

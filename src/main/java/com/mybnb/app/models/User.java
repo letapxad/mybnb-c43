@@ -1,15 +1,23 @@
 package com.mybnb.app.models;
 
 
+import java.io.Serializable;
 import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
+@IdClass(UserId.class)
 public class User {
 	
 	@Id
 	private int SIN;
+	@Id
+	//@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private int id;
 	private String first_name;
 	private String last_name;
 	private String occupation;

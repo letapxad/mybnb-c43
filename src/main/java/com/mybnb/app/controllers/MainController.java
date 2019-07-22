@@ -10,11 +10,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
+import com.mybnb.app.models.Booking;
 import com.mybnb.app.models.Host;
 import com.mybnb.app.models.Listing;
+import com.mybnb.app.models.Renter;
+import com.mybnb.app.repository.BookingRepository;
 import com.mybnb.app.repository.HostRepository;
 import com.mybnb.app.repository.ListingRepository;
+import com.mybnb.app.repository.RenterRepository;
 
 @Controller
 public class MainController {
@@ -23,6 +26,12 @@ public class MainController {
 	
 	@Autowired
 	private HostRepository hostRepo;
+
+	@Autowired
+    private RenterRepository renterRepo;
+	
+	@Autowired
+    private BookingRepository bookingRepo;
 	
 	@GetMapping("/hosts")
 	public String index(Model model) {
@@ -30,10 +39,7 @@ public class MainController {
 		model.addAttribute("hosts",hosts );
 		return "index";
 	}
-	
-	
-	
-	
+
 	@GetMapping("/listing")
 	public String getListing(Model  model, @RequestParam int listing_id) {
 //		System.out.println(host_sin + " "+ listing_id);
@@ -42,6 +48,21 @@ public class MainController {
 		model.addAttribute("listing", listing);
 		System.out.println(listing.getName());
 		return "listing";
-		
 	}
+	
+	@GetMapping("/renters")
+	public String getRenters (Model model) {
+	  Iterable<Renter> renters = renterRepo.findAll();
+      model.addAttribute("renters", renters);
+      return "renter";
+	}
+	
+	@GetMapping("/booking")
+    public String getBooking(Model  model, @RequestParam int booking_id) {
+//      System.out.println(host_sin + " "+ listing_id);
+        Booking booking = bookingRepo.findByBookingId(booking_id);
+        model.addAttribute("booking", booking);
+        return "booking";
+    }
+		
 }

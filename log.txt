@@ -1,0 +1,18 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------< com.mybnb:mybnb-c43 >-------------------------
+[INFO] Building mybnb-c43 0.0.1-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.1.0:clean (default-clean) @ mybnb-c43 ---
+[INFO] Deleting C:\Users\HP\Desktop\CSCC43\New_project\mybnb-c43\target
+[INFO] 
+[INFO] --- maven-resources-plugin:3.1.0:resources (default-resources) @ mybnb-c43 ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] Copying 4 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.1:compile (default-compile) @ mybnb-c43 ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 25 source files to C:\Users\HP\Desktop\CSCC43\New_project\mybnb-c43\target\classes
+Terminate batch job (Y/N)? 
