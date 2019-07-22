@@ -25,12 +25,12 @@ insert into amenity (name)
 		("Air_Conditioning"), 
 		("Breakfast");
 
-insert into listing (id, active, country, latitude, listed_on, longitude, name, postal_code, street_name, street_num, type, unit, host_sin, host_id) 
+insert into listing (id, active, country, latitude, listed_on, longitude, name, city, postal_code_area, postal_code_num, street_name, street_num, type, unit, host_sin, host_id) 
 	values 
-		(1, 1, "Canada", 10.00, "2019-08-01", 10.0, "Listing A", "ABC100", "Markham", 10, "Full House", 1, 123456785, 1),
-		(2, 1, "Canada", 20.00, "2019-08-02", 20.0, "Listing B", "DEF200", "Eglinton", 20, "Room", 2, 123456742, 5),
-		(3, 1, "Canada", 30.00, "2019-08-03", 30.0, "Listing C", "GHI300", "Military Trail", 30, "Apartment", 3, 123456742, 5),
-		(4, 0, "Canada", 40.00, "2019-08-04", 40.0, "Listing D", "JKL400", "Markham", 40, "Full House", 4, 123456785, 1);
+		(1, 1, "Canada", 10.00, "2019-08-01", 10.0, "Listing A", "Toronto", "ABC", "100", "Markham", 10, "Full House", 1, 123456785, 1),
+		(2, 1, "Canada", 20.00, "2019-08-02", 20.0, "Listing B", "Toronto", "DEF", "200", "Eglinton", 20, "Room", 2, 123456742, 5),
+		(3, 1, "Canada", 30.00, "2019-08-03", 30.0, "Listing C", "Toronto", "GHI", "300", "Military Trail", 30, "Apartment", 3, 123456742, 5),
+		(4, 0, "Canada", 40.00, "2019-08-04", 40.0, "Listing D", "Toronto", "JKL", "400", "Markham", 40, "Full House", 4, 123456785, 1);
 		
 insert into availability (date, price, listing_host_sin, listing_id, listing_host_id)
 	values

@@ -93,7 +93,7 @@ public class MybnbC43Application implements  ApplicationRunner{
 	   listing.setLongitude((Float.parseFloat(new Faker().address().longitude())));
 	   listing.setListed_on(new Faker().date().past(5, TimeUnit.HOURS));
 	   listing.setName(new Faker().lorem().sentence(5));
-	   listing.setPostal_code(new Faker().address().zipCode());
+	   //listing.setPostal_code(new Faker().address().zipCode());
 	   listing.setStreet_name(new Faker().address().streetName());
 	   listing.setStreet_num(Integer.parseInt(new Faker().address().streetAddressNumber()));
 	   listing.setUnit(new Faker().address().buildingNumber());

@@ -36,7 +36,9 @@ public class Listing {
 	private int street_num;
 	private String street_name;
 	private String unit;
-	private String postal_code;
+	private String city;
+	private String postal_code_area;
+	private String postal_code_num;
 	private String country;
 	private Date listed_on;
 	@Column(columnDefinition = "TINYINT")
@@ -92,12 +94,25 @@ public class Listing {
 	public void setUnit(String unit) {
 		this.unit = unit;
 	}
-	public String getPostal_code() {
-		return postal_code;
-	}
-	public void setPostal_code(String postal_code) {
-		this.postal_code = postal_code;
-	}
+	public String getCity() {
+    return city;
+  }
+  public void setCity(String city) {
+    this.city = city;
+  }
+  public String getPostal_code_area() {
+    return postal_code_area;
+  }
+  public void setPostal_code_area(String postal_code_area) {
+    this.postal_code_area = postal_code_area;
+  }
+  public String getPostal_code_num() {
+    return postal_code_num;
+  }
+  public void setPostal_code_num(String postal_code_num) {
+    this.postal_code_num = postal_code_num;
+  }
+
 	public String getCountry() {
 		return country;
 	}

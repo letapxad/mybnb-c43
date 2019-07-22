@@ -9,5 +9,6 @@ public interface BookingRepository extends CrudRepository<Booking,Integer>{
     
     @Query("SELECT s from Booking s where s.id = ?1")
     Booking findByBookingId(int booking_id);
+    
 
 }
