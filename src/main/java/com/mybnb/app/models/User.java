@@ -15,9 +15,17 @@ public class User {
 	
 	@Id
 	private int SIN;
+	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
 	@Id
-	//@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
+	
 	private String first_name;
 	private String last_name;
 	private String occupation;

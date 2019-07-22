@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+
+
+<h1>
+	Search for listings
+</h1>
+
+<form action="/listings" method="GET">
+	<input type="text" name="unit" placeholder="unit">
+	<input type="text" name="street_num" placeholder="street number">
+	<input type="text" name="street_name" placeholder="street name">
+	<button>Search by address</button>
+</form>
+
+
+<h2>Here is your listing</h2>
+
+<h2 th:text="${listing.street_name}">title</h2>
+<h2 th:text="${listing.street_num}">title</h2>
+<h2 th:text="${listing.unit}">title</h2>
+<h2 th:text="${listing.country}">title</h2>
+<h2 th:text="${listing.postal_code}">title</h2>
+ 
+</body>
+</html>
