@@ -15,9 +15,9 @@ import org.springframework.data.repository.query.Param;
 public interface HostRepository extends CrudRepository<Host, Integer>{
   
   @Modifying
-  @Query(value = "insert into host (active, first_name, last_name, occupation, sin, id) values (?5, ?2, ?3, ?4, ?1, ?6)", nativeQuery = true)
+  @Query(value = "insert into host (active, first_name, last_name, occupation, sin, id) values (1, ?2, ?3, ?4, ?1, ?6)", nativeQuery = true)
   @Transactional
-  void insertHost(int SIN, String first_name, String last_name, String occupation, Boolean active, int id);
+  void insertHost(int SIN, String first_name, String last_name, String occupation, int id);
   
   @Query("select h from Host h where h.SIN = ?1")
   Host findBySIN(int SIN);
@@ -26,5 +26,11 @@ public interface HostRepository extends CrudRepository<Host, Integer>{
   @Query("update Host h set h.active = 0 where h.SIN = ?1")
   @Transactional
   void deleteHost(int SIN);
+  
+  //@Transactional 
+  //@Query("insert into host (active, first_name, last_name, occupation, sin) values (?5, ?2, ?3, ?4, ?1)")
+  //void insertHost(int SIN, String first_name, String last_name, String occupation, Boolean active);
+
 
 }
+ 
