@@ -1,5 +1,6 @@
 package com.mybnb.app.controllers;
 
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
@@ -92,5 +93,42 @@ public class MainController {
     }
 	
 	
+	@GetMapping("/createRenter")
+    public String createRenterForm(Model model) {
+//    hostRepo.insertHost(SIN, first_name, last_name, occupation, true, 10);
+      //model.addAttribute("hosts",hostRepo.findAll());
+      return "create_renter";
+    }
 	
+	@PostMapping("/saveRenter")
+    public String createRenterForm(Model model, @RequestParam int SIN, @RequestParam(required=false) String first_name, @RequestParam(required=false) String last_name, @RequestParam(required=false) String occupation, @RequestParam(required=false) Long card_num, @RequestParam(required=false) Date exp_date) {
+      renterRepo.insertRenter(SIN, first_name, last_name, occupation, true, 11, card_num, exp_date);
+      return "redirect:createRenter";
+    }
+	
+	@GetMapping("/deleteRenter")
+	public String deleteRenterForm(Model model) {
+	  return "delete_renter";
+	}
+	
+	@PostMapping("/delRenter")
+	public String deleteRenterForm(Model model, @RequestParam int SIN) {
+	  Renter renter = renterRepo.findBySIN(SIN);
+	  bookingRepo.cancelAllBooking(renter);
+	  renterRepo.deleteRenter(SIN);
+      return "redirect:deleteRenter";
+	}
+	
+	@GetMapping("/deleteHost")
+    public String deleteHostForm(Model model) {
+      return "delete_host";
+    }
+    
+    @PostMapping("/delHost")
+    public String deleteHostForm(Model model, @RequestParam int SIN) {
+      Host host = hostRepo.findBySIN(SIN);
+      listingRepo.deactivateAllListing(host);
+      hostRepo.deleteHost(SIN);
+      return "redirect:deleteHost";
+    }
 }

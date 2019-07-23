@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<h1>
+	Become a Renter
+</h1>
+
+<form action="/saveRenter" method="POST">
+	<input type="text" name="SIN" placeholder="SIN">
+	<input type="text" name="first_name" placeholder="First Name">
+	<input type="text" name="last_name" placeholder="Last Name">
+	<input type="text" name="occupation" placeholder="Occupation">
+	<input type="text" name="card_num" placeholder="Card Number">
+	<input type="text" name="exp_date" placeholder="Expiry Date">
+	<button>Become a Renter</button>
+</form>
+ 
+</body>
+</html>
