@@ -13,9 +13,9 @@ import org.springframework.data.repository.query.Param;
 @Repository
 public interface HostRepository extends CrudRepository<Host, Integer>{
   
-  @Modifying
-  @Query(value = "insert into host (active, first_name, last_name, occupation, sin, id) values (?5, ?2, ?3, ?4, ?1, ?6)", nativeQuery = true)
-  @Transactional
-  void insertHost(int SIN, String first_name, String last_name, String occupation, Boolean active, int id);
+//  @Transactional 
+//  @Query("insert into host (active, first_name, last_name, occupation, sin) values (?5, ?2, ?3, ?4, ?1)")
+//  void insertHost(int SIN, String first_name, String last_name, String occupation, Boolean active);
 
 }
+ 

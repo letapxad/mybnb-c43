@@ -83,10 +83,11 @@ public class MainController {
 	  return "create_host";
 	}
 	
+	
 	@PostMapping("/saveHost")
-    public String createHostForm(Model model, @RequestParam int SIN, @RequestParam(required=false) String first_name, @RequestParam(required=false) String last_name, @RequestParam(required=false) String occupation) {
-      hostRepo.insertHost(SIN, first_name, last_name, occupation, true, 10);
-      
+    public String createHostForm1(Model model, Host host) {
+//    hostRepo.insertHost(SIN, first_name, last_name, occupation, true);
+      hostRepo.save(host);
       
       return "redirect:createHost";
     }
