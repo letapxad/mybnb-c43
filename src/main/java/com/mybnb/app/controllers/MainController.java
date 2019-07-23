@@ -132,4 +132,20 @@ public class MainController {
       hostRepo.deleteHost(SIN);
       return "redirect:deleteHost";
     }
+    
+    @GetMapping("/createListing")
+    public String createListingForm(Model  model, @RequestParam int host_id) {
+//      System.out.println(host_sin + " "+ listing_id);
+        Host host = hostRepo.findByHostId(host_id);
+        
+        model.addAttribute("host", host);
+        //System.out.println(listing.getName());
+        return "create_listing";
+    }
+    
+    @PostMapping("/saveListing")
+    public String createListingForm(Model model, @RequestParam Listing listing) {
+      listingRepo.save(listing);
+      return "redirect:createListing";
+    }
 }

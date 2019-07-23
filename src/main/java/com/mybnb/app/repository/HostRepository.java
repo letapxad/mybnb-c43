@@ -30,6 +30,8 @@ public interface HostRepository extends CrudRepository<Host, Integer>{
   //@Transactional 
   //@Query("insert into host (active, first_name, last_name, occupation, sin) values (?5, ?2, ?3, ?4, ?1)")
   //void insertHost(int SIN, String first_name, String last_name, String occupation, Boolean active);
+  @Query("select h from Host h where h.id = ?1")
+  Host findByHostId(int host_id);
 
 
 }

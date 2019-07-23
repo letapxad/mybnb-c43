@@ -23,10 +23,13 @@
 <h2 th:text="${listing.street_num}">title</h2>
 <h2 th:text="${listing.unit}">title</h2>
 <h2 th:text="${listing.country}">title</h2>
-<h2 th:text="${listing.postal_code}">title</h2>
 
 <h1>Listed On:</h1>
 <h2 th:text="${listing.listed_on}">title</h2>
+
+<h1>Created By:</h1>
+<h2 th:text="${listing.host.first_name}">title</h2>
+<h2 th:text="${listing.host.last_name}">title</h2>
 
 </body>
 </html>
