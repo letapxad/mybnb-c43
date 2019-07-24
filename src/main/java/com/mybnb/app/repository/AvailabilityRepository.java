@@ -23,5 +23,10 @@ public interface AvailabilityRepository extends CrudRepository<Availability, Int
   @Transactional
   void deleteAvailability(Date date, Listing listing);
 
+  @Modifying
+  @Query(value = "insert into availability (date, price, listing_id) values (?1, ?2, ?3)", nativeQuery = true)
+  @Transactional
+  void insertAvailability(Date new_date, float price, int listing_id);
+
     
 }

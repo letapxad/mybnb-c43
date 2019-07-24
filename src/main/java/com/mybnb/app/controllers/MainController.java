@@ -207,6 +207,7 @@ public class MainController {
       bookingRepo.insertBooking(renter_id, listing_id, start_date, end_date, cost, 10, "Booked");
       Listing listing = listingRepo.findByListingId(listing_id);
       availabilityRepo.deleteAvailability(start_date, listing);
+      //availabilityRepo.deleteAvailability(end_date, listing);
       return "redirect:createBooking";
     }
     
@@ -236,4 +237,27 @@ public class MainController {
       return "redirect:updatePricing";
     }
     
+    @GetMapping("/makeAvailable")
+    public String makeAvailableForm(Model model) {
+      return "make_availaible";
+    }
+    
+    @PostMapping("/maAvailable")
+    public String makeAvailableForm(Model model, @RequestParam Date new_date, @RequestParam float price, @RequestParam int listing_id) {
+      Listing listing = listingRepo.findByListingId(listing_id);
+      availabilityRepo.insertAvailability(new_date, price, listing_id);
+      return "redirect:makeAvailable";
+    }
+    
+    @GetMapping("/makeUnavailable")
+    public String makeUnavailableForm(Model model) {
+      return "make_unavailaible";
+    }
+    
+    @PostMapping("/maUnavailable")
+    public String makeUnavailableForm(Model model, @RequestParam Date date, @RequestParam int listing_id) {
+      Listing listing = listingRepo.findByListingId(listing_id);
+      availabilityRepo.deleteAvailability(date, listing);
+      return "redirect:makeUnavailable";
+    }
 }
