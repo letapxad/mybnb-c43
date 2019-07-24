@@ -4,19 +4,11 @@ import java.io.Serializable;
 
 public class BookingId implements Serializable{
 	
-	private int id; //booking id
+	//private int id; //booking id
 	
 	private Renter renter;
 	
 	private Listing listing;
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
 
 	public Listing getListing() {
 		return listing;

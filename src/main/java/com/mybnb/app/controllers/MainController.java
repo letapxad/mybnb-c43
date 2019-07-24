@@ -3,6 +3,7 @@ package com.mybnb.app.controllers;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +14,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import com.mybnb.app.models.Availability;
 import com.mybnb.app.models.Booking;
 import com.mybnb.app.models.Host;
 import com.mybnb.app.models.Listing;
 import com.mybnb.app.models.Renter;
+import com.mybnb.app.repository.AvailabilityRepository;
 import com.mybnb.app.repository.BookingRepository;
 import com.mybnb.app.repository.HostRepository;
 import com.mybnb.app.repository.ListingRepository;
@@ -35,6 +38,9 @@ public class MainController {
 	
 	@Autowired
     private BookingRepository bookingRepo;
+	
+	@Autowired
+	private AvailabilityRepository availabilityRepo;
 	
 	@GetMapping("/hosts")
 	public String index(Model model) {
@@ -109,8 +115,8 @@ public class MainController {
     }
 	
 	@PostMapping("/saveRenter")
-    public String createRenterForm(Model model, @RequestParam int SIN, @RequestParam(required=false) String first_name, @RequestParam(required=false) String last_name, @RequestParam(required=false) String occupation, @RequestParam(required=false) Long card_num, @RequestParam(required=false) Date exp_date) {
-      renterRepo.insertRenter(SIN, first_name, last_name, occupation, true, 11, card_num, exp_date);
+    public String createRenterForm(Model model, Renter renter) {//@RequestParam int SIN, @RequestParam(required=false) String first_name, @RequestParam(required=false) String last_name, @RequestParam(required=false) String occupation, @RequestParam(required=false) Long card_num, @RequestParam(required=false) Date exp_date) {
+      renterRepo.save(renter);//renterRepo.insertRenter(SIN, first_name, last_name, occupation, true, 11, card_num, exp_date);
       return "redirect:createRenter";
     }
 	
@@ -123,7 +129,7 @@ public class MainController {
 	public String deleteRenterForm(Model model, @RequestParam int SIN) {
 	  Renter renter = renterRepo.findBySIN(SIN);
 	  bookingRepo.cancelAllBooking(renter);
-	  renterRepo.deleteRenter(SIN);
+	  renterRepo.deactivateRenter(SIN);
       return "redirect:deleteRenter";
 	}
 	
@@ -136,7 +142,7 @@ public class MainController {
     public String deleteHostForm(Model model, @RequestParam int SIN) {
       Host host = hostRepo.findBySIN(SIN);
       listingRepo.deactivateAllListing(host);
-      hostRepo.deleteHost(SIN);
+      hostRepo.deactivateHost(SIN);
       return "redirect:deleteHost";
     }
     
@@ -151,8 +157,83 @@ public class MainController {
     }
     
     @PostMapping("/saveListing")
-    public String createListingForm(Model model, @RequestParam Listing listing) {
-      listingRepo.save(listing);
+    public String createListingForm(Model model, 
+        @RequestParam String name,
+        @RequestParam String type,
+        @RequestParam double latitude,
+        @RequestParam double longitude,
+        @RequestParam String country,
+        @RequestParam String city,
+        @RequestParam String street_name,
+        @RequestParam int street_num,
+        @RequestParam int unit,
+        @RequestParam String postal_code_area,
+        @RequestParam String postal_code_num,
+        @RequestParam Date listed_on,
+        @RequestParam int host_id) {
+      listingRepo.insertListing(name, type, latitude, longitude, country, city, street_name, street_num, unit, postal_code_area, postal_code_num, listed_on, host_id);
+      //listingRepo.save(listing);
       return "redirect:createListing";
     }
+    
+    @GetMapping("/deleteListing")
+    public String deleteListingForm(Model model) {
+      return "delete_listing";
+    }
+    
+    @PostMapping("/delListing")
+    public String deleteListingForm(Model model, @RequestParam int id) {
+      //Host host = hostRepo.findBySIN(SIN);
+      listingRepo.deactivateListing(id);
+      //hostRepo.deactivateHost(SIN);
+      return "redirect:deleteListing";
+    }
+    
+    @GetMapping("/allAvailableListings")
+    public String getAvailableListings (Model model) {
+      Iterable<Availability> listings = availabilityRepo.findAll();
+      model.addAttribute("listings", listings);
+      return "available_listings";
+    }
+    
+    @GetMapping("/createBooking")
+    public String createBookingForm(Model model) {
+      return "create_booking";
+    }
+    
+    @PostMapping("/saveBooking")
+    public String createBookingForm(Model model, @RequestParam int renter_id, @RequestParam int listing_id, @RequestParam Date start_date, @RequestParam Date end_date, @RequestParam float cost) {
+      Iterable<Availability> listings = availabilityRepo.findAll();
+      bookingRepo.insertBooking(renter_id, listing_id, start_date, end_date, cost, 10, "Booked");
+      Listing listing = listingRepo.findByListingId(listing_id);
+      availabilityRepo.deleteAvailability(start_date, listing);
+      return "redirect:createBooking";
+    }
+    
+    @GetMapping("/cancelBooking")
+    public String cancelBookingForm(Model model) {
+      return "cancel_booking";
+    }
+    
+    @PostMapping("/canBooking")
+    public String cancelBookingForm(Model model, @RequestParam int renter_id, @RequestParam int listing_id) {
+      List<Booking> bookings = bookingRepo.fidnByRenterId(renter_id);
+      Renter renter = renterRepo.findByRenterId(renter_id);
+      Listing listing = listingRepo.findByListingId(listing_id);
+      bookingRepo.cancelBooking(renter, listing);
+      return "redirect:cancelBooking";
+    }
+    
+    @GetMapping("/updatePricing")
+    public String updatePricingForm(Model model) {
+      return "update_pricing";
+    }
+    
+    @PostMapping("/upPricing")
+    public String updatePricingForm(Model model, @RequestParam float new_price, @RequestParam int listing_id) {
+      Listing listing = listingRepo.findByListingId(listing_id);
+      availabilityRepo.updatPricing(listing, new_price);
+      return "redirect:updatePricing";
+    }
+    
 }

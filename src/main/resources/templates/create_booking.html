@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<h1>
+	Make a Booking
+</h1>
+
+<form action="/saveBooking" method="POST">
+	<input type="text" name="renter_id" placeholder="Renter ID">
+	<input type="text" name="listing_id" placeholder="Listing ID">
+	<input type="text" name="start_date" placeholder="Start Date">
+	<input type="text" name="end_date" placeholder="End Date">
+	<input type="text" name="cost" placeholder="Payment Amount">
+	<button>Make a Booking</button>
+</form>
+ 
+</body>
+</html>

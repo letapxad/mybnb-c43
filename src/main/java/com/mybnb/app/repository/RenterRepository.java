@@ -4,6 +4,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import com.mybnb.app.models.Renter;
 import java.sql.Date;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -19,9 +20,17 @@ public interface RenterRepository extends CrudRepository<Renter, Integer>{
   @Modifying
   @Query("update Renter r set r.active = 0 where r.SIN = ?1")
   @Transactional
-  void deleteRenter(int SIN);
+  void deactivateRenter(int SIN);
+  
+  @Modifying
+  @Query("delete from Renter r where r.SIN = ?1")
+  @Transactional
+  void deleteHost(int SIN);
   
   @Query("select r from Renter r where r.SIN = ?1")
   Renter findBySIN(int SIN);
+
+  @Query("SELECT r from Renter r where r.id = ?1")
+  Renter findByRenterId(int renter_id);
 	
 }

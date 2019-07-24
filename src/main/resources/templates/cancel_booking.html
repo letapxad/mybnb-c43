@@ -6,12 +6,13 @@
 </head>
 <body>
 <h1>
-	Deactivate Renter
+	Cancel a Booking
 </h1>
 
-<form action="/delRenter" method="POST">
-	<input type="text" name="SIN" placeholder="SIN">
-	<button>Deactivate Renter</button>
+<form action="/canBooking" method="POST">
+	<input type="text" name="renter_id" placeholder="Renter ID">
+	<input type="text" name="listing_id" placeholder="Listing ID">
+	<button>Cancel</button>
 </form>
  
 </body>

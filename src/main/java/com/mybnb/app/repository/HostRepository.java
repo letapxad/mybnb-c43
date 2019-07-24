@@ -25,6 +25,11 @@ public interface HostRepository extends CrudRepository<Host, Integer>{
   @Modifying
   @Query("update Host h set h.active = 0 where h.SIN = ?1")
   @Transactional
+  void deactivateHost(int SIN);
+  
+  @Modifying
+  @Query("delete from Host h where h.SIN = ?1")
+  @Transactional
   void deleteHost(int SIN);
   
   //@Transactional 

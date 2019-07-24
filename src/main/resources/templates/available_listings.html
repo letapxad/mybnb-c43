@@ -5,14 +5,13 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-<h1>
-	Deactivate Renter
-</h1>
-
-<form action="/delRenter" method="POST">
-	<input type="text" name="SIN" placeholder="SIN">
-	<button>Deactivate Renter</button>
-</form>
- 
+<h1>List of Available Listings</h1>
+  <table>
+    <tr th:each="listing: ${listings}">
+	    <td th:text="${listing.listing.id}" />
+	    <td th:text="${listing.price}" />
+	    <td th:text="${listing.date}" />
+	</tr>
+</table>
 </body>
 </html>

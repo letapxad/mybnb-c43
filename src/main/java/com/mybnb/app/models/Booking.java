@@ -2,7 +2,7 @@ package com.mybnb.app.models;
 
 import java.sql.Date;
 import java.util.List;
-
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.GeneratedValue;
@@ -20,20 +20,22 @@ import javax.persistence.Enumerated;
 public class Booking {
   
   
-  @GeneratedValue(strategy=GenerationType.IDENTITY)
+  //@GeneratedValue(strategy=GenerationType.IDENTITY)
   private int id;
   
-  private enum Status {Booked, Cancelled;}
+  private enum Status {Booked, Canceled;}
   
   @Enumerated(EnumType.STRING)
   private Status status;
   
-  private Date date;
+  private Date start_date;
+  
+  private Date end_date;
   
   private float cost;
   
   @Id
-  @ManyToOne
+  @ManyToOne //(cascade = CascadeType.REMOVE)
   private Renter renter;
   
   @Id
@@ -71,10 +73,17 @@ public class Booking {
   public void setListing(Listing listing) {
     this.listing = listing;
   }
-  public Date getDate() {
-    return date;
+  public Date getStart_date() {
+    return start_date;
   }
-  public void setDate(Date date) {
-    this.date = date;
+  public void setStart_date(Date start_date) {
+    this.start_date = start_date;
   }
+  public Date getEnd_date() {
+    return end_date;
+  }
+  public void setEnd_date(Date end_date) {
+    this.end_date = end_date;
+  }
+
 }
