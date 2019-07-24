@@ -10,11 +10,17 @@ import javax.persistence.IdClass;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-@IdClass(UserId.class)
 public class User {
 	
-	@Id
+	@Column(unique=true)
 	private int SIN;
+	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;

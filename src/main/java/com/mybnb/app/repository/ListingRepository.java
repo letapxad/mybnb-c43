@@ -1,5 +1,6 @@
 package com.mybnb.app.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -8,7 +9,7 @@ import com.mybnb.app.models.Host;
 import com.mybnb.app.models.Listing;
 import com.mybnb.app.models.Renter;
 
-public interface ListingRepository extends CrudRepository<Listing,Integer>{
+public interface ListingRepository extends JpaRepository<Listing,Integer>{
 
 	
 	@Query("SELECT s from Listing s where s.id = ?1")

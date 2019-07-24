@@ -17,6 +17,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.github.javafaker.Faker;
+import com.mybnb.app.models.Booking;
 import com.mybnb.app.models.Host;
 import com.mybnb.app.models.Listing;
 import com.mybnb.app.models.Renter;
@@ -45,38 +46,66 @@ public class MybnbC43Application implements  ApplicationRunner{
       
 	   System.out.println("Seeding data...");
 	   
-	   this.insertHostsAndListing(15);
-       this.insertRenters(25);
-//       this.insertListings();
-       
+	   
+	   this.insertRenters(25);
+	   // creates 15 hosts with random amount of listing
+	   // from 0 to 5 per host
+	   this.insertHostsAndListing(15, 5);
+	   // insert 25 renters
+//       this.createBookings()
               
 }
    
-   private void insertHostsAndListing(int limit) {
-	   for(int i = 0; i < limit; i++) {
-		   Host host = new Host();
-		   int ssn = 100000000 + new Random().nextInt(899999999);
-		   host.setSIN(ssn);
-		   host.setActive(true);
-		   host.setFirst_name(new Faker().name().firstName());
-		   host.setLast_name(new Faker().name().lastName());
-		   host.setOccupation(new Faker().job().title());
-		   hostRepository.save(host);
-//		   this.insertOneListing(host);
+   private void insertHostsAndListing(int host_count, int listing_count) {
+	   for(int i = 0; i < host_count; i++) {
+		   Host host = this.insertOneHost();
+		   for(int j = 0; j < new Random().nextInt(listing_count); j++) {
+			   this.insertOneListing(host);
+		   }
 	   }
    }
    
-   private void insertRenters(int limit) {
-	   for(int i = 0; i < limit; i++) {
-		   Renter renter = new Renter();
-		   int ssn = 100000000 + new Random().nextInt(899999999);
-		   renter.setSIN(ssn);
-		   renter.setActive(true);
-		   renter.setFirst_name(new Faker().name().firstName());
-		   renter.setLast_name(new Faker().name().lastName());
-		   renter.setOccupation(new Faker().job().title());
-		   renterRepository.save(renter);
+   private void insertRenters(int renter_count) {
+	   for(int i = 0; i < renter_count; i++) {
+		  insertOneRenter();
 	   }
+   }
+   
+   // inserts 1 renter 
+   private Renter insertOneRenter() {
+	   Renter renter = new Renter();
+	   int ssn = 100000000 + new Random().nextInt(899999999);
+	   renter.setSIN(ssn);
+	   renter.setActive(true);
+	   renter.setFirst_name(new Faker().name().firstName());
+	   renter.setLast_name(new Faker().name().lastName());
+	   renter.setOccupation(new Faker().job().title());
+	   renterRepository.save(renter);
+	   return renterRepository.findById(renter.getSIN()).orElse(null);
+   }
+   
+   
+//   private Booking createOneBooking(Renter renter, Listing listing) {
+//	   	
+//	   
+//	   return null;
+//   }
+   private Host insertOneHost() {
+	   Host host = new Host();
+	   int ssn = 100000000 + new Random().nextInt(899999999);
+	   host.setSIN(ssn);
+	   host.setActive(true);
+	   host.setFirst_name(new Faker().name().firstName());
+	   host.setLast_name(new Faker().name().lastName());
+	   host.setOccupation(new Faker().job().title());
+	   hostRepository.save(host);
+	   Host host1 = hostRepository.findById(host.getId()).orElse(null);
+	   if(host1 == null) {
+		   System.out.println("HOST NOT SAVED");
+		   return null;
+	   }
+	   
+	   return hostRepository.findById(host.getId()).orElse(null);
    }
    
    private void insertOneListing(Host host) {
@@ -97,7 +126,7 @@ public class MybnbC43Application implements  ApplicationRunner{
 	   listing.setStreet_name(new Faker().address().streetName());
 	   listing.setStreet_num(Integer.parseInt(new Faker().address().streetAddressNumber()));
 	   listing.setUnit(new Faker().address().buildingNumber());
-	   listing.setHost(host);
+//	   listing.setHost(host);
 	   listing.setType(types.get(new Random().nextInt(types.size() - 1)));
 	   listingRepository.save(listing);
    }

@@ -19,7 +19,7 @@ import javax.persistence.Enumerated;
 @IdClass(BookingId.class)
 public class Booking {
   
-  @Id
+  
   @GeneratedValue(strategy=GenerationType.IDENTITY)
   private int id;
   
@@ -27,7 +27,9 @@ public class Booking {
   
   @Enumerated(EnumType.STRING)
   private Status status;
+  
   private Date date;
+  
   private float cost;
   
   @Id

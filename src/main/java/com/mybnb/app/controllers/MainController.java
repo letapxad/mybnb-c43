@@ -53,6 +53,12 @@ public class MainController {
 		return "listing";
 	}
 	
+	@PostMapping("/addListing")
+	public String saveListing(Model model, @RequestParam Listing listing) {
+		listingRepo.save(listing);
+		return "listings";
+	}
+	
 	@GetMapping("/renters")
 	public String getRenters (Model model) {
 	  Iterable<Renter> renters = renterRepo.findAll();
@@ -67,7 +73,8 @@ public class MainController {
         model.addAttribute("booking", booking);
         return "booking";
     }
-	 
+	  
+	
 	@GetMapping("/listings")
 	public String getListingForm(Model model, @RequestParam(required=false) int street_num, @RequestParam(required=false) String street_name, @RequestParam(required=false) String unit) {
 		

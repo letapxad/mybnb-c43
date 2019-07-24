@@ -3,24 +3,39 @@ package com.mybnb.app.models;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import javax.persistence.OneToMany;
+import javax.persistence.Version;
 import javax.persistence.ManyToMany;
 
 @Entity
-@IdClass(Listing.ListingId.class)
+//@IdClass(ListingId.class)
 public class Listing {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
+	
+	@ManyToOne
+	@JoinColumn(name="host_id")
+	private Host host;
+	
 	private double longitude;
 	
 	public List<Availability> getAvailabilities() {
@@ -31,7 +46,7 @@ public class Listing {
   }
   
   
-  private double latitude;
+   private double latitude;
 	private String type;
 	private int street_num;
 	private String street_name;
@@ -45,9 +60,6 @@ public class Listing {
 	private boolean active;
 	private String name;
 
-	@Id
-	@ManyToOne
-	private Host host;
 	
 	@OneToMany(mappedBy="listing")
     private List<Availability> availabilities;
@@ -151,12 +163,6 @@ public class Listing {
 	public void setHost(Host host) {
 		this.host = host;
 	}
-//	public List<Availability> getAvailabilities() {
-//		return availabilities;
-//	}
-//	public void setAvailabilities(List<Availability> availabilities) {
-//		this.availabilities = availabilities;
-//	}
 	public List<Amenity> getAmenities() {
 		return amenities;
 	}
@@ -166,44 +172,56 @@ public class Listing {
 	
 	
 	
-	static public class ListingId implements Serializable {
-	    /**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-		
-		
-		private int id;
-		
-		
-	    private Host host;
-	 
-	    // default constructor
-	 
-	    public ListingId() {
-	    	
-	    }
-	    
-
-
-		public ListingId(int id, Host host ) {
-	        this.host = host;
-	        this.id = id;
-	    }
-
-		public int getId() {
-			return id;
-		}
-
-		public void setId(int id) {
-			this.id = id;
-		}
-
-
-		public static long getSerialversionuid() {
-			return serialVersionUID;
-		}
-	 
-	    // equals() and hashCode()
-	}
+//	static public class ListingId implements Serializable {
+//	    /**
+//		 * 
+//		 */
+//		private static final long serialVersionUID = 1L;
+//		
+//		@GeneratedValue(strategy=GenerationType.IDENTITY)
+//		private int id;
+//		
+//		
+//	    private Host host;
+//	 
+//	    // default constructor
+//	 
+//	    public ListingId() {
+//	    	
+//	    }
+//	    
+//
+//
+//		public ListingId(int id, Host host ) {
+//	        this.setHost(host);
+//	        this.id = id;
+//	    }
+//
+//		public int getId() {
+//			return id;
+//		}
+//
+//		public void setId(int id) {
+//			this.id = id;
+//		}
+//
+//
+//		public static long getSerialversionuid() {
+//			return serialVersionUID;
+//		}
+//
+//
+//
+//		public Host getHost() {
+//			return host;
+//		}
+//
+//
+//
+//		public void setHost(Host host) {
+//			this.host = host;
+//		}
+//	 
+//	    // equals() and hashCode()
+//	}
 }

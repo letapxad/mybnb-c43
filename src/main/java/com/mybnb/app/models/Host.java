@@ -2,9 +2,12 @@ package com.mybnb.app.models;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+
 
 @Entity
 public class Host extends User{
@@ -16,7 +19,7 @@ public class Host extends User{
 	 * relationship this will be auto generated
 	 */
 	
-	@OneToMany(mappedBy="host")
+	@OneToMany(mappedBy="host", cascade = CascadeType.ALL)
 	private List<Listing> listings;
 
 	public List<Listing> getListings() {
