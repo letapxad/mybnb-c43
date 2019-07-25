@@ -3,28 +3,52 @@ package com.mybnb.app.controllers;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.cglib.core.Predicate;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.ExampleMatcher.MatcherConfigurer;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.mybnb.app.beans.ListingQuery;
+import com.mybnb.app.models.Amenity;
 import com.mybnb.app.models.Availability;
 import com.mybnb.app.models.Booking;
 import com.mybnb.app.models.Host;
 import com.mybnb.app.models.Listing;
 import com.mybnb.app.models.Renter;
+import com.mybnb.app.repository.AmenityRepository;
 import com.mybnb.app.repository.AvailabilityRepository;
 import com.mybnb.app.repository.BookingRepository;
 import com.mybnb.app.repository.HostRepository;
 import com.mybnb.app.repository.ListingRepository;
 import com.mybnb.app.repository.RenterRepository;
 
+@ControllerAdvice
 @Controller
 public class MainController {
 	@Autowired
@@ -41,6 +65,9 @@ public class MainController {
 	
 	@Autowired
 	private AvailabilityRepository availabilityRepo;
+	
+	@Autowired
+	private AmenityRepository amenityRepo;
 	
 	@GetMapping("/hosts")
 	public String index(Model model) {
@@ -145,16 +172,17 @@ public class MainController {
       hostRepo.deactivateHost(SIN);
       return "redirect:deleteHost";
     }
-    
-    @GetMapping("/createListing")
-    public String createListingForm(Model  model, @RequestParam int host_id) {
-//      System.out.println(host_sin + " "+ listing_id);
-        Host host = hostRepo.findByHostId(host_id);
-        
-        model.addAttribute("host", host);
-        //System.out.println(listing.getName());
-        return "create_listing";
-    }
+
+    // not working
+//    @GetMapping("/createListing")
+//    public String createListingForm(Model  model, @RequestParam int host_id) {
+////      System.out.println(host_sin + " "+ listing_id);
+//        Host host = hostRepo.findByHostId(host_id);
+//        
+//        model.addAttribute("host", host);
+//        //System.out.println(listing.getName());
+//        return "create_listing";
+//    }
     
     @PostMapping("/saveListing")
     public String createListingForm(Model model, 
@@ -202,7 +230,7 @@ public class MainController {
     }
     
     @PostMapping("/saveBooking")
-    public String createBookingForm(Model model, @RequestParam int renter_id, @RequestParam int listing_id, @RequestParam Date start_date, @RequestParam Date end_date, @RequestParam float cost) {
+    public String createBookingForm(Model model, @RequestParam int renter_id, @RequestParam int listing_id, @RequestParam(required=false) Date start_date, @RequestParam(required=false) Date end_date, @RequestParam float cost) {
       Iterable<Availability> listings = availabilityRepo.findAll();
       bookingRepo.insertBooking(renter_id, listing_id, start_date, end_date, cost, 10, "Booked");
       Listing listing = listingRepo.findByListingId(listing_id);
@@ -260,4 +288,104 @@ public class MainController {
       availabilityRepo.deleteAvailability(date, listing);
       return "redirect:makeUnavailable";
     }
+    
+    // queries to support
+    @GetMapping("searchListings")
+    public String queryListingsForm(@ModelAttribute(name="lq") ListingQuery lq, BindingResult result,Model model) {
+    	System.out.println(lq);
+    	System.out.println(result.getAllErrors());
+    		System.out.println(lq.getStreet_num());
+    		  boolean long_lat = false;
+    		  
+    		  if(lq.getLatitude() != 0.0 && lq.getLongitude() != 0.0) long_lat = true;
+    		  
+    		  // initialize a listing object
+    		  Listing listing = new Listing();
+    		  // we want only active listings
+        	  listing.setActive(true);
+        	  System.out.println(lq.getStreet_name());
+        	  if(lq.getStreet_name() != null && lq.getStreet_name().length()> 0) listing.setStreet_name(lq.getStreet_name());
+        	  if(lq.getStreet_num() > 0) listing.setStreet_num(lq.getStreet_num());
+        	  if(lq.getPostal_code_area()!= null && lq.getPostal_code_area().length()>0) listing.setPostal_code_area(lq.getPostal_code_area());
+        	  if(lq.getPostal_code_num() != null && lq.getPostal_code_num().length()>0) listing.setPostal_code_num(lq.getPostal_code_num());
+        	  if(lq.getCity() != null&& lq.getCity().length()>0) listing.setCity(lq.getCity());
+        	  if(lq.getCountry() != null && lq.getCountry().length()>0) listing.setCountry(lq.getCountry());
+        	          	  
+        	  ExampleMatcher matcher = null;
+        	  
+        	  if(!long_lat) {
+        		  if(lq.getStreet_num() == 0) {
+        			  matcher = ExampleMatcher.matching()
+    	        			  .withIgnorePaths("id","longitude","latitude","street_num")
+    	        			  .withIgnoreCase()
+    	        			  .withIgnoreNullValues();
+    	        			  
+        
+        		  } else {
+        			  matcher = ExampleMatcher.matching()
+    	        			  .withIgnorePaths("id","longitude","latitude")
+    	        			  .withIgnoreCase()
+    	        			  .withIgnoreNullValues();
+        			  
+        		  }
+        	  } else {
+        		  if(lq.getStreet_num() == 0) {
+        			  matcher = ExampleMatcher.matching()
+    	        			  .withIgnorePaths("id","street_num")
+    	        			  .withIgnoreCase()
+    	        			  .withIgnoreNullValues();
+        		  } else {
+        			  matcher = ExampleMatcher.matching()
+    	        			  .withIgnorePaths("id")
+    	        			  .withIgnoreCase()
+    	        			  .withIgnoreNullValues();
+        		  }
+        	  }
+        	  
+        	 
+	        	
+        	  System.out.println(matcher.getIgnoredPaths());
+        	  
+        	  Example<Listing> example = Example.of(listing, matcher);
+        	  
+        	  System.out.println(example);
+        	  List<Listing> listings = listingRepo.findAll(example);
+        	System.out.println(listings.size());
+            model.addAttribute("listings", listings);
+            model.addAttribute("num", listings.size());
+  
+    	 
+    	return "query_listings";
+    }
+    
+//    @InitBinder
+//    public void initBinder(WebDataBinder binder) {
+//    	System.out.println("binedr got called");
+//        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+//    }
+    
+    
+//  queries to support
+//    @PostMapping("searchListings")
+//    public String queryListings(Model model, @ModelAttribute ListingQuery lq) {
+//    	
+//    	  if(lq!=null) {
+//    		  Listing listing = new Listing();
+//        	  listing.setActive(true);
+//        	  if(lq.getCity() != null) listing.setCity(lq.getCity());
+//        	  if (lq.getCountry() != null) listing.setCountry(lq.getCountry());
+//        	  if(lq.getStreet_name() != null) listing.setStreet_name(lq.getStreet_name());
+//        	  ExampleMatcher matcher = ExampleMatcher.matching();
+//        	  
+//        	  Example<Listing> example = Example.of(listing, matcher);
+//        	  
+//        	  List<Listing> listings = listingRepo.findAll(example);
+//        	System.out.println(listings.size());
+//            model.addAttribute("listings", listings);
+//    	  }
+//    	  System.out.println("lq was null");
+//    	 
+//    	return "query_listings";
+//    }
 }
+

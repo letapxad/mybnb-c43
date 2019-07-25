@@ -47,10 +47,10 @@ public class MybnbC43Application implements  ApplicationRunner{
 	   System.out.println("Seeding data...");
 	   
 	   
-	   this.insertRenters(25);
+	   this.insertRenters(12);
 	   // creates 15 hosts with random amount of listing
 	   // from 0 to 5 per host
-	   this.insertHostsAndListing(15, 5);
+	   this.insertHostsAndListing(7, 5);
 	   // insert 25 renters
 //       this.createBookings()
               
@@ -114,6 +114,16 @@ public class MybnbC43Application implements  ApplicationRunner{
 	   types.add("Room");
 	   types.add("Apartment");
 	   
+	   ArrayList<String> postal_area = new ArrayList<>();
+	   postal_area.add("M2R");
+	   postal_area.add("D4G");
+	   postal_area.add("T6H");
+	   
+	   
+	   ArrayList<String> postal_num = new ArrayList<>();
+	   postal_num.add("E5M");
+	   postal_num.add("M2E");
+	   postal_num.add("T6L");
 	   
 	   Listing listing = new Listing();
 	   listing.setActive(true);
@@ -121,13 +131,16 @@ public class MybnbC43Application implements  ApplicationRunner{
 	   listing.setLatitude((Float.parseFloat(new Faker().address().latitude())));
 	   listing.setLongitude((Float.parseFloat(new Faker().address().longitude())));
 	   listing.setListed_on(new Faker().date().past(5, TimeUnit.HOURS));
-	   listing.setName(new Faker().lorem().sentence(5));
-	   //listing.setPostal_code(new Faker().address().zipCode());
+	   listing.setName(new Faker().lorem().sentence(3));
+	   listing.setPostal_code_area(postal_area.get(new Random().nextInt(postal_area.size()-1)));
+	   listing.setPostal_code_num(postal_num.get(new Random().nextInt(postal_num.size()-1)));
+	   listing.setCity(new Faker().address().city());
 	   listing.setStreet_name(new Faker().address().streetName());
 	   listing.setStreet_num(Integer.parseInt(new Faker().address().streetAddressNumber()));
 	   listing.setUnit(new Faker().address().buildingNumber());
-//	   listing.setHost(host);
+	   listing.setHost(host);
 	   listing.setType(types.get(new Random().nextInt(types.size() - 1)));
+//	   listing.setAmenities(amenities);
 	   listingRepository.save(listing);
    }
    

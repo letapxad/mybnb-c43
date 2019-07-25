@@ -1,6 +1,7 @@
 
 use mybnbauto;
 
+ 
  insert into host (active, first_name, last_name, occupation, sin) 
  	values 
  		(1, "Dax", "Patel", "Student", 123456785),
@@ -8,7 +9,7 @@ use mybnbauto;
  		(0, "B", "B", "Student", 123456723),
  		(0, "C", "C", "Student", 123456712),
  		(1, "Syed Sohail", "Ahmed", "Philosopher", 123456742);
-
+ 
  insert into renter (active, first_name, last_name, occupation, card_num, exp_date, sin) 
  	values 
  		(1, "Nick", "Koudas", "Professor", 1111111111, "2020-10-01", 123456999),

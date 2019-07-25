@@ -2,18 +2,29 @@ package com.mybnb.app.repository;
 
 import java.sql.Date;
 import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.PersistenceContext;
+
+import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.QueryByExampleExecutor;
 import org.springframework.transaction.annotation.Transactional;
 import com.mybnb.app.models.Host;
 import com.mybnb.app.models.Listing;
 import com.mybnb.app.models.Renter;
 
-public interface ListingRepository extends JpaRepository<Listing,Integer>{
-
+public interface ListingRepository extends JpaRepository<Listing,Integer>, QueryByExampleExecutor<Listing>, ListingRepositoryCustom{
 	
+	 
+	
+	 
 	@Query("SELECT s from Listing s where s.id = ?1")
 	Listing findByListingId(int listing_id);
 	
@@ -45,5 +56,5 @@ public interface ListingRepository extends JpaRepository<Listing,Integer>{
 	
 	@Query("SELECT l FROM Listing l INNER JOIN Availability a")
 	Iterable<Listing> findAllAvailableListings();
-
+	
 }

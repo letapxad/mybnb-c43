@@ -1,0 +1,59 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+
+
+<h1>
+	listings
+</h1>
+
+<form action="/searchListings" method="get" modelAttribute="lq">
+	<input type="text" name="street_num" placeholder="street number">
+	<input type="text" name="street_name" placeholder="street name"></br>
+	<input type="text" name="city" placeholder="city">
+	<input type="text" name="country" placeholder="country">
+	<input type="text" name="postal_code_area" placeholder="postal code area" maxlength="3">
+	<input type="text" name="postal_code_num" placeholder="postal code location" maxlength="3"></br>
+	<input type="text" name="checkin_date" placeholder="Checkin Date">
+	<input type="text" name="checkout_date" placeholder="Checkout Date"></br>
+	<input type="text" name="longitude" placeholder="longitude">
+	<input type="text" name="latitude" placeholder="latitude" >
+	 <select name="distance">
+		  <option value="5">5</option>
+		  <option value="25">25</option>
+		  <option value="50">50</option>
+		  <option value="100">100</option>
+	</select> </br>
+	<input type="text" name="min_cost" placeholder="min cost" >
+	<input type="text" name="max_cost" placeholder="max cost"></br>
+	<input type="radio" name="price_low_to_high" value="true" checked="true">Price low to high<br>
+	<input type="radio" name="price_low_to_high" value="false"> Price high to low<br>
+	<button>Search</button>
+</form>
+
+
+<h2 th:text="${num} + ' listings found'">
+	
+</h2>
+
+<div th:each="listing:${listings}">
+<table border=1>
+	<tr>
+		<td>
+		<h3 th:text="${listing.name}"></h3>
+<p><span th:text="${listing.street_num}"></span> 
+<span th:text="${listing.street_name}"></span>,
+<span th:text="${listing.city}"></span>, <span th:text="${listing.country}"></span>,
+<span th:text="${listing.postal_code_area}"></span> <span th:text="${listing.postal_code_num}"></span></p>
+		</td>
+	</tr>
+
+</table>
+
+</div>
+</body>
+</html>

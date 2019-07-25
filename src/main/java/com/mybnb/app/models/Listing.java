@@ -45,6 +45,7 @@ public class Listing {
     this.availabilities = availabilities;
   }
   
+  	
   
    private double latitude;
 	private String type;
