@@ -57,4 +57,7 @@ public interface ListingRepository extends JpaRepository<Listing,Integer>, Query
 	@Query("SELECT l FROM Listing l INNER JOIN Availability a")
 	Iterable<Listing> findAllAvailableListings();
 	
+	@Query("SELECT l.host from Listing l where l.id = ?1")
+	Host getHost(int booking_listing_id);
+	
 }

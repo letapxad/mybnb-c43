@@ -48,3 +48,20 @@ use mybnbauto;
  		(2, 2000.00, "2019-08-05", "2019-08-05", "Booked", 1, 1),
  		(3, 3000.00, "2019-08-07", "2019-08-07", "Booked", 2, 5),
  		(4, 4000.00, "2019-08-09", "2019-08-09", "Booked", 3, 5);
+ 		
+ insert into renter_comment_host (added_on , rating, text, booking_listing_id, booking_renter_id, host_id)
+ 	values
+ 		("2019-07-29", 5, "You are a great host", 1, 1, 1),
+ 		("2019-07-29", 1, "You are a bad host", 2, 5, 5);
+ 		
+ insert into renter_comment_listing (added_on , rating, text, booking_listing_id, booking_renter_id, host_id)
+ 	values
+ 		("2019-07-29", 5, "I loved it", 1, 1, 1),
+ 		("2019-07-29", 1, "I hated it", 2, 5, 5);
+ 		
+ insert into host_comment_renter (added_on , rating, text, booking_listing_id, booking_renter_id, host_id)
+ 	values
+ 		("2019-07-29", 5, "You are a great renter", 1, 1, 1),
+ 		("2019-07-29", 1, "You are a bad renter", 2, 5, 5);
+ 		
+ 

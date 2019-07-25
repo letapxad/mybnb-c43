@@ -5,6 +5,8 @@ import java.sql.Date;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
 
@@ -20,6 +22,10 @@ public class Comment {
  	@Id
  	@OneToOne
  	private Booking booking;
+ 	
+ 	@ManyToOne
+    @JoinColumn(name="host_id")
+    private Host host;
 
 	public String getText() {
 		return text;

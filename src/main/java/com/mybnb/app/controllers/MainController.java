@@ -44,8 +44,11 @@ import com.mybnb.app.models.Renter;
 import com.mybnb.app.repository.AmenityRepository;
 import com.mybnb.app.repository.AvailabilityRepository;
 import com.mybnb.app.repository.BookingRepository;
+import com.mybnb.app.repository.HostCommentRenterRepository;
 import com.mybnb.app.repository.HostRepository;
 import com.mybnb.app.repository.ListingRepository;
+import com.mybnb.app.repository.RenterCommentHostRepository;
+import com.mybnb.app.repository.RenterCommentListingRepository;
 import com.mybnb.app.repository.RenterRepository;
 
 @ControllerAdvice
@@ -68,6 +71,15 @@ public class MainController {
 	
 	@Autowired
 	private AmenityRepository amenityRepo;
+	
+	@Autowired
+	private RenterCommentHostRepository renterCommentHostRepo;
+	
+	@Autowired
+    private RenterCommentListingRepository renterCommentListingRepo;
+	
+	@Autowired
+    private HostCommentRenterRepository hostCommentRenterRepo;
 	
 	@GetMapping("/hosts")
 	public String index(Model model) {
@@ -387,5 +399,51 @@ public class MainController {
 //    	 
 //    	return "query_listings";
 //    }
+    
+    
+    @GetMapping("/renterCommentHost")
+    public String renterCommentHostForm(Model model) {
+      return "renter_comment_host";
+    }
+    
+    @PostMapping("/renterCommentHostPost")
+    public String renterCommentHostForm(Model model, @RequestParam Date added_on, 
+        @RequestParam String text, @RequestParam float rating,
+        @RequestParam int booking_listing_id, @RequestParam int booking_renter_id) {
+      Host host = listingRepo.getHost(booking_listing_id);
+      int host_id = host.getId();
+      //System.out.println(hostId);
+      renterCommentHostRepo.insertComment(added_on, rating, text, booking_listing_id, booking_renter_id, host_id);
+      //renterCommentListingRepo.insertComment(added_on, rating, text, booking_listing_id, booking_renter_id, host_id);
+      return "redirect:renterCommentHost";
+    }
+    
+    @GetMapping("/renterCommentListing")
+    public String renterCommentListingForm(Model model) {
+      return "renter_comment_listing";
+    }
+    
+    @PostMapping("/renterCommentListingPost")
+    public String renterCommentListingForm(Model model, @RequestParam Date added_on, 
+        @RequestParam String text, @RequestParam float rating,
+        @RequestParam int booking_listing_id, @RequestParam int booking_renter_id, @RequestParam int host_id) {
+      //Host host = listingRepo.getHost(booking_listing_id);
+      //int host_id = host.getId();
+      renterCommentListingRepo.insertComment(added_on, rating, text, booking_listing_id, booking_renter_id, host_id);
+      return "redirect:renterCommentListing";
+    }
+    
+    @GetMapping("/hostCommentRenter")
+    public String hostCommentRenterForm(Model model) {
+      return "host_comment_renter";
+    }
+    
+    @PostMapping("/hostCommentRenterPost")
+    public String hostCommentRenterForm(Model model, @RequestParam Date added_on, 
+        @RequestParam String text, @RequestParam float rating,
+        @RequestParam int booking_listing_id, @RequestParam int booking_renter_id, @RequestParam int host_id) {
+      hostCommentRenterRepo.insertComment(added_on, rating, text, booking_listing_id, booking_renter_id, host_id);
+      return "redirect:hostCommentRenter";
+    }
 }
 
