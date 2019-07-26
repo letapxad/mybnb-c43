@@ -1,31 +1,41 @@
 package com.mybnb.app.models;
 
-import java.sql.Date;
 
+
+import java.util.Date;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
+import org.springframework.data.annotation.CreatedDate;
 
 @MappedSuperclass
-@IdClass(CommentId.class)
+//@IdClass(CommentId.class)
 public class Comment {
-	private String text;
-	
+
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private int id;
+  
+    private String text;
+ 
 	private Date addedOn;
 	
 	private float rating;
 	
- 	@Id
+ 	//@Id
  	@OneToOne
+ 	@JoinColumn(name="booking_id")
  	private Booking booking;
  	
- 	@ManyToOne
-    @JoinColumn(name="host_id")
-    private Host host;
+ 	//@ManyToOne
+    //@JoinColumn(name="host_id")
+    //private Host host;
 
 	public String getText() {
 		return text;
@@ -50,7 +60,7 @@ public class Comment {
 	public void setRating(float rating) {
 		this.rating = rating;
 	}
-
+	/*
 	public Booking getBooking() {
 		return booking;
 	}
@@ -58,4 +68,5 @@ public class Comment {
 	public void setBooking(Booking booking) {
 		this.booking = booking;
 	}
+	*/
 }

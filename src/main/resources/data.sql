@@ -2,21 +2,21 @@
 use mybnbauto;
 
  
- insert into host (active, first_name, last_name, occupation, sin) 
+ insert into host (active, first_name, last_name, occupation, sin, dob) 
  	values 
- 		(1, "Dax", "Patel", "Student", 123456785),
- 		(0, "A", "A", "Professor", 123456787),
- 		(0, "B", "B", "Student", 123456723),
- 		(0, "C", "C", "Student", 123456712),
- 		(1, "Syed Sohail", "Ahmed", "Philosopher", 123456742);
+ 		(1, "Dax", "Patel", "Student", 123456785, "2000-07-25"),
+ 		(0, "A", "A", "Professor", 123456787, "2000-07-26"),
+ 		(0, "B", "B", "Student", 123456723, "2000-07-27"),
+ 		(0, "C", "C", "Student", 123456712, "2000-07-28"),
+ 		(1, "Syed Sohail", "Ahmed", "Philosopher", 123456742, "2000-07-29");
  
- insert into renter (active, first_name, last_name, occupation, card_num, exp_date, sin) 
+ insert into renter (active, first_name, last_name, occupation, card_num, exp_date, sin, dob) 
  	values 
- 		(1, "Nick", "Koudas", "Professor", 1111111111, "2020-10-01", 123456999),
- 		(0, "D", "D", "Professor", 2222222222, "2020-09-01", 123456888),
- 		(0, "E", "E", "Student", 3333333333, "2020-01-01", 123456777),
- 		(0, "F", "F", "Student", 4444444444, "2020-02-01", 123456555),
- 		(1, "Richard", "Pancer", "Professor", 5555555555, "2020-06-01", 123454444);
+ 		(1, "Nick", "Koudas", "Professor", 1111111111, "2020-10-01", 123456999,"1980-07-25"),
+ 		(0, "D", "D", "Professor", 2222222222, "2020-09-01", 123456888, "1980-07-26"),
+ 		(0, "E", "E", "Student", 3333333333, "2020-01-01", 123456777, "1980-07-27"),
+ 		(0, "F", "F", "Student", 4444444444, "2020-02-01", 123456555, "1980-07-28"),
+ 		(1, "Richard", "Pancer", "Professor", 5555555555, "2020-06-01", 123454444, "1980-07-29");
 		
  insert into amenity (name)
  	values
@@ -43,25 +43,25 @@ use mybnbauto;
  		("2019-08-09", 4000.00, 3),
  		("2019-08-10", 4000.00, 3);
 		
- insert into booking (id, cost, start_date, end_date, status, listing_id, renter_id)
+ insert into booking (cost, start_date, end_date, status, listing_id, renter_id, host_id)
  	values
- 		(2, 2000.00, "2019-08-05", "2019-08-05", "Booked", 1, 1),
- 		(3, 3000.00, "2019-08-07", "2019-08-07", "Booked", 2, 5),
- 		(4, 4000.00, "2019-08-09", "2019-08-09", "Booked", 3, 5);
+ 		(2000.00, "2019-08-05", "2019-08-05", "Booked", 1, 1, 1),
+ 		(3000.00, "2019-08-07", "2019-08-07", "Booked", 2, 5, 5),
+ 		(4000.00, "2019-08-09", "2019-08-09", "Booked", 3, 5, 5);
  		
- insert into renter_comment_host (added_on , rating, text, booking_listing_id, booking_renter_id, host_id)
+ insert into renter_comment_host (added_on , rating, text, booking_id)
  	values
- 		("2019-07-29", 5, "You are a great host", 1, 1, 1),
- 		("2019-07-29", 1, "You are a bad host", 2, 5, 5);
+ 		("2019-07-29", 5, "You are a great host", 1),
+ 		("2019-07-29", 1, "You are a bad host", 2);
  		
- insert into renter_comment_listing (added_on , rating, text, booking_listing_id, booking_renter_id, host_id)
+ insert into renter_comment_listing (added_on , rating, text, booking_id)
  	values
- 		("2019-07-29", 5, "I loved it", 1, 1, 1),
- 		("2019-07-29", 1, "I hated it", 2, 5, 5);
+ 		("2019-07-29", 5, "I loved it", 1),
+ 		("2019-07-29", 1, "I hated it", 2);
  		
- insert into host_comment_renter (added_on , rating, text, booking_listing_id, booking_renter_id, host_id)
+ insert into host_comment_renter (added_on , rating, text, booking_id)
  	values
- 		("2019-07-29", 5, "You are a great renter", 1, 1, 1),
- 		("2019-07-29", 1, "You are a bad renter", 2, 5, 5);
+ 		("2019-07-29", 5, "You are a great renter", 1),
+ 		("2019-07-29", 1, "You are a bad renter", 2);
  		
  

@@ -35,5 +35,9 @@ public interface BookingRepository extends CrudRepository<Booking,Integer>{
     @Transactional
     void cancelBooking(Renter renter, Listing listing);
     
+    @Modifying
+    @Query("delete from Booking b where b.renter = ?1")
+    @Transactional
+    void deleteBooking(Renter renter);
 
 }

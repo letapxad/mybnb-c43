@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.mybnb.app.beans.ListingQuery;
 import com.mybnb.app.models.Amenity;
 import com.mybnb.app.models.Availability;
@@ -167,8 +167,11 @@ public class MainController {
 	@PostMapping("/delRenter")
 	public String deleteRenterForm(Model model, @RequestParam int SIN) {
 	  Renter renter = renterRepo.findBySIN(SIN);
-	  bookingRepo.cancelAllBooking(renter);
-	  renterRepo.deactivateRenter(SIN);
+	  //bookingRepo.deleteBooking(renter);
+	  //renterCommentHostRepo.deleteComment(SIN);
+	  //hostCommentRenterRepo.deleteComment(SIN);
+	  //renterCommentListingRepo.deleteComment(SIN);
+	  renterRepo.deleteRenter(SIN);
       return "redirect:deleteRenter";
 	}
 	
@@ -237,18 +240,31 @@ public class MainController {
     }
     
     @GetMapping("/createBooking")
-    public String createBookingForm(Model model) {
+    public String createBookingForm(Model model, @ModelAttribute("message") String message) {
+      model.addAttribute("message", message);
       return "create_booking";
     }
     
     @PostMapping("/saveBooking")
-    public String createBookingForm(Model model, @RequestParam int renter_id, @RequestParam int listing_id, @RequestParam(required=false) Date start_date, @RequestParam(required=false) Date end_date, @RequestParam float cost) {
-      Iterable<Availability> listings = availabilityRepo.findAll();
+    public String createBookingForm(Model model,@ModelAttribute("message") String message, @RequestParam int renter_id, @RequestParam int listing_id, @RequestParam(required=false) Date start_date, @RequestParam(required=false) Date end_date, @RequestParam float cost, RedirectAttributes redirectAttributes) {
+      List<Availability> availabilities = availabilityRepo.findByListingId(listing_id);
+      
+      
+      
+      // generate a list of dates from start_date to (endate - 1)
+      // for each date in dates:
+            // for ava in avas
+                  // ava.getDAte == date
+                          //break;
+                  // readched here if no ava
+            
       bookingRepo.insertBooking(renter_id, listing_id, start_date, end_date, cost, 10, "Booked");
       Listing listing = listingRepo.findByListingId(listing_id);
       availabilityRepo.deleteAvailability(start_date, listing);
       //availabilityRepo.deleteAvailability(end_date, listing);
-      return "redirect:createBooking";
+//      model.addAttribute("message", "this is a message");
+      redirectAttributes.addFlashAttribute("message", "this is a message");
+      return "create_booking";
     }
     
     @GetMapping("/cancelBooking")
@@ -407,13 +423,13 @@ public class MainController {
     }
     
     @PostMapping("/renterCommentHostPost")
-    public String renterCommentHostForm(Model model, @RequestParam Date added_on, 
+    public String renterCommentHostForm(Model model, 
         @RequestParam String text, @RequestParam float rating,
         @RequestParam int booking_listing_id, @RequestParam int booking_renter_id) {
       Host host = listingRepo.getHost(booking_listing_id);
       int host_id = host.getId();
       //System.out.println(hostId);
-      renterCommentHostRepo.insertComment(added_on, rating, text, booking_listing_id, booking_renter_id, host_id);
+      renterCommentHostRepo.insertComment(rating, text, booking_listing_id, booking_renter_id, host_id);
       //renterCommentListingRepo.insertComment(added_on, rating, text, booking_listing_id, booking_renter_id, host_id);
       return "redirect:renterCommentHost";
     }

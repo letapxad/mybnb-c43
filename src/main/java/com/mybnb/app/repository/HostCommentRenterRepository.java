@@ -6,7 +6,6 @@ import com.mybnb.app.models.Availability;
 import com.mybnb.app.models.HostCommentRenter;
 import com.mybnb.app.models.Listing;
 import com.mybnb.app.models.Renter;
-import com.mybnb.app.models.RenterCommentHost;
 import com.mybnb.app.models.RenterCommentListing;
 import java.sql.Date;
 import org.springframework.data.jpa.repository.Modifying;
@@ -21,5 +20,10 @@ public interface HostCommentRenterRepository extends CrudRepository<HostCommentR
   @Transactional
   void insertComment(Date added_on, float rating, String text,
       int booking_listing_id, int booking_renter_id, int host_id);
+  
+  @Modifying
+  @Query(value = "delete from host_comment_renter where booking_renter_id = ?1", nativeQuery = true)
+  @Transactional
+  void deleteComment(int SIN);
 
 }

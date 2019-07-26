@@ -3,7 +3,11 @@ package com.mybnb.app.models;
 import java.io.Serializable;
 
 public class CommentId implements Serializable {
-	private Booking booking;
+	/**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
+  private Booking booking;
  	
  	public CommentId(Booking booking) {
  		this.setBooking(booking);

@@ -25,7 +25,7 @@ public interface RenterRepository extends CrudRepository<Renter, Integer>{
   @Modifying
   @Query("delete from Renter r where r.SIN = ?1")
   @Transactional
-  void deleteHost(int SIN);
+  void deleteRenter(int SIN);
   
   @Query("select r from Renter r where r.SIN = ?1")
   Renter findBySIN(int SIN);

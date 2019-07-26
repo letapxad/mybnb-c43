@@ -23,7 +23,7 @@ import com.mybnb.app.models.Renter;
 public interface ListingRepository extends JpaRepository<Listing,Integer>, QueryByExampleExecutor<Listing>, ListingRepositoryCustom{
 	
 	 
-	
+   
 	 
 	@Query("SELECT s from Listing s where s.id = ?1")
 	Listing findByListingId(int listing_id);

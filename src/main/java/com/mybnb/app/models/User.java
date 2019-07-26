@@ -2,6 +2,7 @@ package com.mybnb.app.models;
 
 
 import java.io.Serializable;
+import java.sql.Date;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -28,6 +29,7 @@ public class User {
 	private String first_name;
 	private String last_name;
 	private String occupation;
+	private Date DOB;
 	@Column(columnDefinition = "TINYINT")
 	private Boolean active;
 	
@@ -61,6 +63,12 @@ public class User {
 	public void setActive(Boolean active) {
 		this.active = active;
 	}
+  public Date getDOB() {
+    return DOB;
+  }
+  public void setDOB(Date dOB) {
+    DOB = dOB;
+  }
 	
 	
 }

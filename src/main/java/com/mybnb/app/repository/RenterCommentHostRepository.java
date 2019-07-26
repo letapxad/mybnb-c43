@@ -1,3 +1,4 @@
+
 package com.mybnb.app.repository;
 
 import org.springframework.stereotype.Repository;
@@ -15,10 +16,15 @@ import org.springframework.data.repository.CrudRepository;
 public interface RenterCommentHostRepository extends CrudRepository<RenterCommentHost, Integer>{
 
   @Modifying
-  @Query(value = "insert into renter_comment_host (added_on , rating, text, booking_listing_id, booking_renter_id, host_id) values (?1, ?2, ?3, ?4, ?5, ?6)", nativeQuery = true)
+  @Query(value = "insert into renter_comment_host (rating, text, booking_listing_id, booking_renter_id, host_id) values (?1, ?2, ?3, ?4, ?5)", nativeQuery = true)
   @Transactional
-  void insertComment(Date added_on, float rating, String text,
+  void insertComment(float rating, String text,
       int booking_listing_id, int booking_renter_id, int host_id);
+  
+  @Modifying
+  @Query(value = "delete from renter_comment_host where booking_renter_id = ?1", nativeQuery = true)
+  @Transactional
+  void deleteComment(int SIN);
 
     
 }
