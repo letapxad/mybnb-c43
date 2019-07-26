@@ -1,7 +1,7 @@
 package com.mybnb.app.models;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 import javax.persistence.Access;

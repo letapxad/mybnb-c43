@@ -130,7 +130,7 @@ public class MybnbC43Application implements  ApplicationRunner{
 	   listing.setCountry(new Faker().address().country());
 	   listing.setLatitude((Float.parseFloat(new Faker().address().latitude())));
 	   listing.setLongitude((Float.parseFloat(new Faker().address().longitude())));
-	   listing.setListed_on(new Faker().date().past(5, TimeUnit.HOURS));
+	   //listing.setListed_on(new Faker().date().past(5, TimeUnit.HOURS));
 	   listing.setName(new Faker().lorem().sentence(3));
 	   listing.setPostal_code_area(postal_area.get(new Random().nextInt(postal_area.size()-1)));
 	   listing.setPostal_code_num(postal_num.get(new Random().nextInt(postal_num.size()-1)));

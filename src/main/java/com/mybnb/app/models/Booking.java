@@ -49,6 +49,12 @@ public class Booking {
   private Host host;
   
   
+  public Host getHost() {
+    return host;
+  }
+  public void setHost(Host host) {
+    this.host = host;
+  }
   public Status getStatus() {
     return status;
   }

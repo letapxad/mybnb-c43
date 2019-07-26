@@ -3,7 +3,9 @@ package com.mybnb.app.controllers;
 //import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.sql.Date;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -134,13 +136,27 @@ public class MainController {
 	public String createHostForm(Model model) {
 //	  hostRepo.insertHost(SIN, first_name, last_name, occupation, true, 10);
 	  //model.addAttribute("hosts",hostRepo.findAll());
+	  
 	  return "create_host";
 	}
 	
 	
 	@PostMapping("/saveHost")
-    public String createHostForm1(Model model, Host host) {
+    public String createHostForm1(Model model, Host host, RedirectAttributes ra) {
 //    hostRepo.insertHost(SIN, first_name, last_name, occupation, true);
+	  
+	  java.util.Date dob = host.getDOB();
+	  java.util.Date current_date = new java.util.Date();
+	  Calendar c  = Calendar.getInstance();
+	  c.setTime(dob);
+	  c.add(Calendar.YEAR, 18);
+	  java.util.Date eighteen = c.getTime();
+	  if (eighteen.after(current_date)) {
+	    System.out.println("You are below 18" );
+	    ra.addFlashAttribute("message", "You are below 18");
+	    return "redirect:createHost";
+	  }
+	  
       hostRepo.save(host);
       
       return "redirect:createHost";
@@ -156,7 +172,22 @@ public class MainController {
 	
 	@PostMapping("/saveRenter")
     public String createRenterForm(Model model, Renter renter) {//@RequestParam int SIN, @RequestParam(required=false) String first_name, @RequestParam(required=false) String last_name, @RequestParam(required=false) String occupation, @RequestParam(required=false) Long card_num, @RequestParam(required=false) Date exp_date) {
-      renterRepo.save(renter);//renterRepo.insertRenter(SIN, first_name, last_name, occupation, true, 11, card_num, exp_date);
+	  java.util.Date dob = renter.getDOB();
+      java.util.Date current_date = new java.util.Date();
+      Calendar c  = Calendar.getInstance();
+      c.setTime(dob);
+      c.add(Calendar.YEAR, 18);
+      java.util.Date eighteen = c.getTime();
+      if (eighteen.after(current_date)) {
+        System.out.println("You are below 18" );
+        return "redirect:renters";
+      }
+      java.util.Date exp_date = renter.getExp_date();
+      if (exp_date.before(current_date)) {
+        System.out.println("Your card has expired");
+        return "redirect:renters";
+      }
+	  renterRepo.save(renter);//renterRepo.insertRenter(SIN, first_name, last_name, occupation, true, 11, card_num, exp_date);
       return "redirect:createRenter";
     }
 	
@@ -241,46 +272,104 @@ public class MainController {
     }
     
     @GetMapping("/createBooking")
-    public String createBookingForm(Model model, @ModelAttribute("message") String message) {
-      model.addAttribute("message", message);
+    public String createBookingForm(Model model) {
+      //model.addAttribute("message", message);
       return "create_booking";
     }
     
     @PostMapping("/saveBooking")
     public String createBookingForm(Model model,@ModelAttribute("message") String message, @RequestParam int renter_id, @RequestParam int listing_id, @RequestParam Date start_date, @RequestParam Date end_date, @RequestParam float cost, RedirectAttributes redirectAttributes) {
       List<Availability> availabilities = availabilityRepo.findByListingId(listing_id);
-      
-      
-      
       // generate a list of dates from start_date to (endate - 1)
+      java.util.Date st_date = start_date;
+      java.util.Date en_date = end_date;
+      Calendar c1 = Calendar.getInstance();
+      c1.setTime(en_date);
+      c1.add(Calendar.DATE, -1);
+      en_date = c1.getTime();
+      //System.out.println(en_date);
+      java.util.Date date = st_date;
+      //System.out.println(date.compareTo(en_date) <= 0);
+      Boolean available = false;
+      while (date.compareTo(en_date) <= 0) {
+        available = false;
+        for (Availability availability : availabilities) {
+          //System.out.println(date);
+          //System.out.println(availability.getDate());
+          java.util.Date a_date = availability.getDate();
+          //System.out.println(date.compareTo(a_date) == 0);
+          if (date.compareTo(a_date) == 0) {
+            //System.out.println("hello");
+            available = true;
+            //System.out.println(available);
+            break;
+          }
+        }
+        Calendar c2 = Calendar.getInstance();
+        c2.setTime(date);
+        c2.add(Calendar.DATE, 1);
+        date = c2.getTime();
+      }
       // for each date in dates:
             // for ava in avas
                   // ava.getDAte == date
                           //break;
                   // readched here if no ava
+      if (available == false) {
+        System.out.println("This listing is not available on the specified date range");
+        return "redirect:renters";
+      }
       Host host = listingRepo.getHost(listing_id);
       int host_id = host.getId();
-      bookingRepo.insertBooking(renter_id, listing_id, host_id, start_date, end_date, cost, 10, "Booked");
+      bookingRepo.insertBooking(renter_id, listing_id, host_id, start_date, end_date, cost, "Booked");
       Listing listing = listingRepo.findByListingId(listing_id);
       availabilityRepo.deleteAvailability(start_date, listing);
       //availabilityRepo.deleteAvailability(end_date, listing);
 //      model.addAttribute("message", "this is a message");
-      redirectAttributes.addFlashAttribute("message", "this is a message");
-      return "create_booking";
+      //redirectAttributes.addFlashAttribute("message", "this is a message");
+      return "redirect:createBooking";
     }
     
-    @GetMapping("/cancelBooking")
-    public String cancelBookingForm(Model model) {
-      return "cancel_booking";
+    @GetMapping("/cancelBookingRenter")
+    public String cancelBookingRenterForm(Model model) {
+      return "cancel_booking_renter";
     }
     
-    @PostMapping("/canBooking")
-    public String cancelBookingForm(Model model, @RequestParam int renter_id, @RequestParam int listing_id) {
+    @PostMapping("/canBookingRenter")
+    public String cancelBookingRenterForm(Model model, @RequestParam int renter_id, @RequestParam int booking_id) {
       List<Booking> bookings = bookingRepo.fidnByRenterId(renter_id);
-      Renter renter = renterRepo.findByRenterId(renter_id);
-      Listing listing = listingRepo.findByListingId(listing_id);
-      bookingRepo.cancelBooking(renter, listing);
-      return "redirect:cancelBooking";
+      //Renter renter1 = renterRepo.findByRenterId(renter_id);
+      Booking booking = bookingRepo.findByBookingId(booking_id);
+      Renter renter = booking.getRenter();
+      int renter_id2 = renter.getId();
+      if (renter_id != renter_id2) {
+        System.out.println("You cannot cancel this booking");
+        return "redirect:renters";
+      }
+      //Listing listing = listingRepo.findByListingId(listing_id);
+      bookingRepo.cancelBooking(booking_id);
+      return "redirect:cancelBookingRenter";
+    }
+    
+    @GetMapping("/cancelBookingHost")
+    public String cancelBookingHostForm(Model model) {
+      return "cancel_booking_host";
+    }
+    
+    @PostMapping("/canBookingHost")
+    public String cancelBookingHostForm(Model model, @RequestParam int host_id, @RequestParam int booking_id) {
+      //List<Booking> bookings = bookingRepo.fidnByRenterId(renter_id);
+      //Renter renter1 = renterRepo.findByRenterId(renter_id);
+      Booking booking = bookingRepo.findByBookingId(booking_id);
+      Host host = booking.getHost();
+      int host_id2 = host.getId();
+      if (host_id != host_id2) {
+        System.out.println("You cannot cancel this booking");
+        return "redirect:hosts";
+      }
+      //Listing listing = listingRepo.findByListingId(listing_id);
+      bookingRepo.cancelBooking(booking_id);
+      return "redirect:cancelBookingHost";
     }
     
     @GetMapping("/updatePricing")
@@ -301,7 +390,7 @@ public class MainController {
     }
     
     @PostMapping("/maAvailable")
-    public String makeAvailableForm(Model model, @RequestParam Date new_date, @RequestParam float price, @RequestParam int listing_id) {
+    public String makeAvailableForm(Model model, @RequestParam java.util.Date new_date, @RequestParam float price, @RequestParam int listing_id) {
       Listing listing = listingRepo.findByListingId(listing_id);
       availabilityRepo.insertAvailability(new_date, price, listing_id);
       return "redirect:makeAvailable";
@@ -313,7 +402,7 @@ public class MainController {
     }
     
     @PostMapping("/maUnavailable")
-    public String makeUnavailableForm(Model model, @RequestParam Date date, @RequestParam int listing_id) {
+    public String makeUnavailableForm(Model model, @RequestParam java.util.Date date, @RequestParam int listing_id) {
       Listing listing = listingRepo.findByListingId(listing_id);
       availabilityRepo.deleteAvailability(date, listing);
       return "redirect:makeUnavailable";
@@ -432,6 +521,15 @@ public class MainController {
       //int host_id = host.getId();
       //System.out.println(hostId);
       java.util.Date added_on = new java.util.Date();
+      Booking booking = bookingRepo.getBookingById(booking_id);
+      java.util.Date end_date = booking.getEnd_date();
+      Calendar c = Calendar.getInstance(); 
+      c.setTime(end_date); 
+      c.add(Calendar.DATE, 5);
+      java.util.Date max_date = c.getTime();
+      if (added_on.compareTo(max_date) > 0) {
+        
+      }
       renterCommentHostRepo.insertComment(added_on, rating, text, booking_id);
       //renterCommentListingRepo.insertComment(added_on, rating, text, booking_listing_id, booking_renter_id, host_id);
       return "redirect:renterCommentHost";
@@ -446,9 +544,17 @@ public class MainController {
     public String renterCommentListingForm(Model model, 
         @RequestParam String text, @RequestParam float rating,
         @RequestParam int booking_id) {
-      //Host host = listingRepo.getHost(booking_listing_id);
-      //int host_id = host.getId();
       java.util.Date added_on = new java.util.Date();
+      Booking booking = bookingRepo.getBookingById(booking_id);
+      java.util.Date end_date = booking.getEnd_date();
+      Calendar c = Calendar.getInstance(); 
+      c.setTime(end_date); 
+      c.add(Calendar.DATE, 5);
+      java.util.Date max_date = c.getTime();
+      if (added_on.compareTo(max_date) > 0) {
+        System.out.println("The last day to make a comment has passed.");
+        return "redirect:renters";
+      }
       renterCommentListingRepo.insertComment(added_on, rating, text, booking_id);
       return "redirect:renterCommentListing";
     }
@@ -463,6 +569,15 @@ public class MainController {
         @RequestParam String text, @RequestParam float rating,
         @RequestParam int booking_id) {
       java.util.Date added_on = new java.util.Date();
+      Booking booking = bookingRepo.getBookingById(booking_id);
+      java.util.Date end_date = booking.getEnd_date();
+      Calendar c = Calendar.getInstance(); 
+      c.setTime(end_date); 
+      c.add(Calendar.DATE, 5);
+      java.util.Date max_date = c.getTime();
+      if (added_on.compareTo(max_date) > 0) {
+        
+      }
       hostCommentRenterRepo.insertComment(added_on, rating, text, booking_id);
       return "redirect:hostCommentRenter";
     }
