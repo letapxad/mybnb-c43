@@ -23,6 +23,8 @@ import com.mybnb.app.models.Renter;
 public interface ListingRepository extends JpaRepository<Listing,Integer>, QueryByExampleExecutor<Listing>, ListingRepositoryCustom{
 	
 	 
+   
+	 
 	@Query("SELECT s from Listing s where s.id = ?1")
 	Listing findByListingId(int listing_id);
 	
@@ -77,5 +79,7 @@ public interface ListingRepository extends JpaRepository<Listing,Integer>, Query
 //	
 //	@Query("SELECT s.* FROM Listing s where s.date >= checkin AND s.date <= checkout")
 //	List<Listing> findByAvailabilty(Date checkin, Date checkout);
+	@Query("SELECT l.host from Listing l where l.id = ?1")
+	Host getHost(int booking_listing_id);
 	
 }

@@ -9,18 +9,20 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 
 @Entity
-@IdClass(BookingId.class)
+//@IdClass(BookingId.class)
 public class Booking {
   
-  
-  //@GeneratedValue(strategy=GenerationType.IDENTITY)
+  @Id
+  @GeneratedValue(strategy=GenerationType.IDENTITY)
   private int id;
   
   private enum Status {Booked, Canceled;}
@@ -34,13 +36,17 @@ public class Booking {
   
   private float cost;
   
-  @Id
-  @ManyToOne //(cascade = CascadeType.REMOVE)
+  @ManyToOne//(fetch = FetchType.LAZY)
+  @JoinColumn(name="renter_id")
   private Renter renter;
   
-  @Id
   @ManyToOne
+  @JoinColumn(name="listing_id")
   private Listing listing;
+  
+  @ManyToOne
+  @JoinColumn(name="host_id")
+  private Host host;
   
   
   public Status getStatus() {

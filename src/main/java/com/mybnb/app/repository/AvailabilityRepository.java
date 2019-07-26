@@ -6,6 +6,7 @@ import com.mybnb.app.models.Availability;
 import com.mybnb.app.models.Listing;
 import com.mybnb.app.models.Renter;
 import java.sql.Date;
+import java.util.List;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -28,5 +29,6 @@ public interface AvailabilityRepository extends CrudRepository<Availability, Int
   @Transactional
   void insertAvailability(Date new_date, float price, int listing_id);
 
-    
+  
+  List<Availability> findByListingId(int listing_id);
 }
