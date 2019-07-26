@@ -1,8 +1,9 @@
 package com.mybnb.app.controllers;
 
-import java.sql.Date;
+//import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -214,7 +215,7 @@ public class MainController {
         @RequestParam String postal_code_num,
         @RequestParam Date listed_on,
         @RequestParam int host_id) {
-      listingRepo.insertListing(name, type, latitude, longitude, country, city, street_name, street_num, unit, postal_code_area, postal_code_num, listed_on, host_id);
+      //listingRepo.insertListing(name, type, latitude, longitude, country, city, street_name, street_num, unit, postal_code_area, postal_code_num, listed_on, host_id);
       //listingRepo.save(listing);
       return "redirect:createListing";
     }
@@ -246,7 +247,7 @@ public class MainController {
     }
     
     @PostMapping("/saveBooking")
-    public String createBookingForm(Model model,@ModelAttribute("message") String message, @RequestParam int renter_id, @RequestParam int listing_id, @RequestParam(required=false) Date start_date, @RequestParam(required=false) Date end_date, @RequestParam float cost, RedirectAttributes redirectAttributes) {
+    public String createBookingForm(Model model,@ModelAttribute("message") String message, @RequestParam int renter_id, @RequestParam int listing_id, @RequestParam Date start_date, @RequestParam Date end_date, @RequestParam float cost, RedirectAttributes redirectAttributes) {
       List<Availability> availabilities = availabilityRepo.findByListingId(listing_id);
       
       
@@ -257,8 +258,9 @@ public class MainController {
                   // ava.getDAte == date
                           //break;
                   // readched here if no ava
-            
-      bookingRepo.insertBooking(renter_id, listing_id, start_date, end_date, cost, 10, "Booked");
+      Host host = listingRepo.getHost(listing_id);
+      int host_id = host.getId();
+      bookingRepo.insertBooking(renter_id, listing_id, host_id, start_date, end_date, cost, 10, "Booked");
       Listing listing = listingRepo.findByListingId(listing_id);
       availabilityRepo.deleteAvailability(start_date, listing);
       //availabilityRepo.deleteAvailability(end_date, listing);
@@ -425,11 +427,12 @@ public class MainController {
     @PostMapping("/renterCommentHostPost")
     public String renterCommentHostForm(Model model, 
         @RequestParam String text, @RequestParam float rating,
-        @RequestParam int booking_listing_id, @RequestParam int booking_renter_id) {
-      Host host = listingRepo.getHost(booking_listing_id);
-      int host_id = host.getId();
+        @RequestParam int booking_id) {
+      //Host host = listingRepo.getHost(booking_listing_id);
+      //int host_id = host.getId();
       //System.out.println(hostId);
-      renterCommentHostRepo.insertComment(rating, text, booking_listing_id, booking_renter_id, host_id);
+      java.util.Date added_on = new java.util.Date();
+      renterCommentHostRepo.insertComment(added_on, rating, text, booking_id);
       //renterCommentListingRepo.insertComment(added_on, rating, text, booking_listing_id, booking_renter_id, host_id);
       return "redirect:renterCommentHost";
     }
@@ -440,12 +443,13 @@ public class MainController {
     }
     
     @PostMapping("/renterCommentListingPost")
-    public String renterCommentListingForm(Model model, @RequestParam Date added_on, 
+    public String renterCommentListingForm(Model model, 
         @RequestParam String text, @RequestParam float rating,
-        @RequestParam int booking_listing_id, @RequestParam int booking_renter_id, @RequestParam int host_id) {
+        @RequestParam int booking_id) {
       //Host host = listingRepo.getHost(booking_listing_id);
       //int host_id = host.getId();
-      renterCommentListingRepo.insertComment(added_on, rating, text, booking_listing_id, booking_renter_id, host_id);
+      java.util.Date added_on = new java.util.Date();
+      renterCommentListingRepo.insertComment(added_on, rating, text, booking_id);
       return "redirect:renterCommentListing";
     }
     
@@ -455,10 +459,11 @@ public class MainController {
     }
     
     @PostMapping("/hostCommentRenterPost")
-    public String hostCommentRenterForm(Model model, @RequestParam Date added_on, 
+    public String hostCommentRenterForm(Model model, 
         @RequestParam String text, @RequestParam float rating,
-        @RequestParam int booking_listing_id, @RequestParam int booking_renter_id, @RequestParam int host_id) {
-      hostCommentRenterRepo.insertComment(added_on, rating, text, booking_listing_id, booking_renter_id, host_id);
+        @RequestParam int booking_id) {
+      java.util.Date added_on = new java.util.Date();
+      hostCommentRenterRepo.insertComment(added_on, rating, text, booking_id);
       return "redirect:hostCommentRenter";
     }
 }

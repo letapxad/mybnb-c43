@@ -24,7 +24,7 @@ public class Comment {
   
     private String text;
  
-	private Date addedOn;
+	private java.util.Date addedOn;
 	
 	private float rating;
 	

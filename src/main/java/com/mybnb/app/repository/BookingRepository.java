@@ -1,6 +1,6 @@
 package com.mybnb.app.repository;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -22,9 +22,9 @@ public interface BookingRepository extends CrudRepository<Booking,Integer>{
     void cancelAllBooking(Renter renter);
 
     @Modifying
-    @Query(value = "insert into booking (renter_id, listing_id, start_date, end_date, cost, id, status) values (?1, ?2, ?3, ?4, ?5, ?6, ?7)", nativeQuery = true)
+    @Query(value = "insert into booking (renter_id, listing_id, host_id, start_date, end_date, cost, status) values (?1, ?2, ?3, ?4, ?5, ?6, ?7)", nativeQuery = true)
     @Transactional
-    void insertBooking(int renter_id, int listing_id, Date start_date,
+    void insertBooking(int renter_id, int listing_id, int host_id, Date start_date,
         Date end_date, float cost, int id, String status);
 
     @Query("select b from Booking b where renter_id = ?1")

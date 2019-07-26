@@ -6,6 +6,7 @@ import com.mybnb.app.models.Booking;
 import com.mybnb.app.models.Host;
 import com.mybnb.app.models.Renter;
 import com.mybnb.app.models.User;
+import java.sql.Date;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -15,9 +16,9 @@ import org.springframework.data.repository.query.Param;
 public interface HostRepository extends CrudRepository<Host, Integer>{
   
   @Modifying
-  @Query(value = "insert into host (active, first_name, last_name, occupation, sin, id) values (1, ?2, ?3, ?4, ?1, ?6)", nativeQuery = true)
+  @Query(value = "insert into host (active, first_name, last_name, occupation, sin, dob) values (1, ?2, ?3, ?4, ?1, ?6)", nativeQuery = true)
   @Transactional
-  void insertHost(int SIN, String first_name, String last_name, String occupation, int id);
+  void insertHost(int SIN, String first_name, String last_name, String occupation, Date DOB);
   
   @Query("select h from Host h where h.SIN = ?1")
   Host findBySIN(int SIN);
