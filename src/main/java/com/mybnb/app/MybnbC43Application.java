@@ -1,13 +1,8 @@
 package com.mybnb.app;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +12,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.github.javafaker.Faker;
-import com.mybnb.app.models.Booking;
+import com.mybnb.app.models.Availability;
 import com.mybnb.app.models.Host;
 import com.mybnb.app.models.Listing;
 import com.mybnb.app.models.Renter;
-import com.mybnb.app.models.User;
+import com.mybnb.app.repository.AvailabilityRepository;
 import com.mybnb.app.repository.HostRepository;
 import com.mybnb.app.repository.ListingRepository;
 import com.mybnb.app.repository.RenterRepository;
@@ -37,6 +32,9 @@ public class MybnbC43Application implements  ApplicationRunner{
 	@Autowired
 	private ListingRepository listingRepository;
 	
+	@Autowired
+	private AvailabilityRepository avRepo;
+	
 	public static void main(String[] args) {
 		SpringApplication.run(MybnbC43Application.class, args);
 	}
@@ -50,17 +48,19 @@ public class MybnbC43Application implements  ApplicationRunner{
 	   this.insertRenters(12);
 	   // creates 15 hosts with random amount of listing
 	   // from 0 to 5 per host
-	   this.insertHostsAndListing(7, 5);
+	   this.insertHostsAndListingAndAvailability(7, 5);
 	   // insert 25 renters
 //       this.createBookings()
               
 }
    
-   private void insertHostsAndListing(int host_count, int listing_count) {
+   private void insertHostsAndListingAndAvailability(int host_count, int listing_count) {
 	   for(int i = 0; i < host_count; i++) {
 		   Host host = this.insertOneHost();
 		   for(int j = 0; j < new Random().nextInt(listing_count); j++) {
-			   this.insertOneListing(host);
+			   Listing listing = this.insertOneListing(host);
+//			   for(int k =0; k < 5; k++)
+//				   this.insertOneAvailability(listing);
 		   }
 	   }
    }
@@ -108,7 +108,16 @@ public class MybnbC43Application implements  ApplicationRunner{
 	   return hostRepository.findById(host.getId()).orElse(null);
    }
    
-   private void insertOneListing(Host host) {
+   private void insertOneAvailability(Listing listing) {
+	   Availability av = new Availability();
+	   av.setPrice(new Faker().number().randomDouble(2, 50, 5000));
+	   av.setListing(listing);
+	   av.setDate(new java.sql.Date(2020,new Random().nextInt(11)+1,new Random().nextInt(29)+1));
+	   avRepo.save(av);
+   }
+   
+   
+   private Listing insertOneListing(Host host) {
 	   ArrayList<String> types = new ArrayList<>();
 	   types.add("Full House");
 	   types.add("Room");
@@ -142,6 +151,7 @@ public class MybnbC43Application implements  ApplicationRunner{
 	   listing.setType(types.get(new Random().nextInt(types.size() - 1)));
 //	   listing.setAmenities(amenities);
 	   listingRepository.save(listing);
+	   return listingRepository.findById(listing.getId()).orElse(null);
    }
    
 //   private void insertListings() {

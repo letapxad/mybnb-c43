@@ -3,6 +3,7 @@ package com.mybnb.app.controllers;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +14,9 @@ import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.cglib.core.Predicate;
@@ -33,6 +37,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.mybnb.app.beans.ListingQuery;
 import com.mybnb.app.models.Amenity;
@@ -230,12 +235,13 @@ public class MainController {
     }
     
     @PostMapping("/saveBooking")
-    public String createBookingForm(Model model, @RequestParam int renter_id, @RequestParam int listing_id, @RequestParam(required=false) Date start_date, @RequestParam(required=false) Date end_date, @RequestParam float cost) {
+    public String createBookingForm(Model model, RedirectAttributes redirAttrs, @RequestParam int renter_id, @RequestParam int listing_id, @RequestParam(required=false) Date start_date, @RequestParam(required=false) Date end_date, @RequestParam float cost) {
       Iterable<Availability> listings = availabilityRepo.findAll();
       bookingRepo.insertBooking(renter_id, listing_id, start_date, end_date, cost, 10, "Booked");
       Listing listing = listingRepo.findByListingId(listing_id);
       availabilityRepo.deleteAvailability(start_date, listing);
       //availabilityRepo.deleteAvailability(end_date, listing);
+      redirAttrs.addFlashAttribute("message", "This is message from flash");
       return "redirect:createBooking";
     }
     
@@ -292,67 +298,152 @@ public class MainController {
     // queries to support
     @GetMapping("searchListings")
     public String queryListingsForm(@ModelAttribute(name="lq") ListingQuery lq, BindingResult result,Model model) {
-    	System.out.println(lq);
+//    	System.out.println(lq);
     	System.out.println(result.getAllErrors());
-    		System.out.println(lq.getStreet_num());
-    		  boolean long_lat = false;
+//    		System.out.println(lq.getStreet_num());
+//    		  boolean long_lat = false;
+    	System.out.println(lq.getCheckin_date());
+    	System.out.println();
+    		StringBuilder qfilter = new StringBuilder();
+    		boolean filtered = false;
+    		if(lq.getCheckin_date() != null && lq.getCheckout_date() != null) {
+    			filtered = true;
+    			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+    			String checkin = format.format(lq.getCheckin_date());
+    			String checkout = format.format(lq.getCheckout_date());
+    			
+    			LocalDate cin = new LocalDate(checkin);
+    			LocalDate cout = new LocalDate(checkout);
+    			LocalDate curr = cin;
+    			while(curr.isBefore(cout)) {
+    				System.out.println(curr);
+    				curr = curr.plusDays(1);
+    			}
+    			System.out.println(cin);
+    			System.out.println(cout);
+//    			qfilter.append( date+ )
+    		}
+    		System.out.println(lq.getMin_cost());
+    		
+    		if(lq.getMax_cost() != 0.0) {
+    			filtered = true;
+    			qfilter.append(" AND price >= " +  lq.getMin_cost() +" AND "+" price <= " + lq.getMax_cost());
+//    			qfilter.append(" AND");
+    		}
+    		
+    		if(lq.isPrice_low_to_high()) {
+    			filtered = true;
+    			qfilter.append(" ORDER BY price ASC");
+    		} else {
+    			qfilter.append(" ORDER BY price DESC");
+    		}
+//    		
+//    		qfilter.append("AND 1");
+
+    		  if(lq.getLatitude() != 0.0 && lq.getLongitude() != 0.0) {
+    			  StringBuilder mqb = new StringBuilder();
+    			  
+    			  mqb.append("SELECT a.*,");
+    			  if(filtered) {
+    				  mqb.append("av.*,");
+    			  }
+    			  mqb.append("( 3959 * acos( cos( radians(" + lq.getLatitude() + ") ) "
+    			  		+ " * cos( radians( latitude ) ) "
+    			  		+ " * cos( radians( longitude ) "
+    			  		+ " - radians(" + lq.getLongitude() + ") ) "
+    			  		+ " + sin( radians(" + lq.getLatitude() +") ) "
+    			  		+ " * sin( radians( latitude ) ) ) ) "
+    			  		+ " AS distance ");
+    			  mqb.append(" FROM Listing a ");
+    					  
+    			if(filtered) {
+    				mqb.append(" inner join availability av on av.listing_id=a.id");
+    			}
+    	
+    			  		mqb.append(" HAVING distance < " + lq.getDistance());
+    			  
+    			  
+//    			  System.out.println(lq.getDistance());
+//    			  System.out.println(lq.getLatitude());
+//    			  List<Listing> listings = listingRepo.findByDistance(lq.getDistance(), lq.getLatitude(), lq.getLongitude());
+    			  System.out.println(mqb.toString() + qfilter.toString());
+    			  List<Listing> listings = listingRepo.findByCustomQuery(mqb.toString(), qfilter.toString());
+    			  
+    			  
+    			  model.addAttribute("listings", listings);
+    	          model.addAttribute("num", listings.size());
+    	  
+    	          
+    	    	return "query_listings";
+    			  
+    		  } 
+//    		  
+//    		  if(lq.getCity() != null) {
+//    		  
+////    			  listing.setActive(true);
+//    			  List<Listing> listings = listingRepo.findByAddress(lq.getStreet_num(), lq.getStreet_name(), lq.getCity(), lq.getCountry(), lq.getPostal_code_area(), lq.getPostal_code_num(), lq.isPrice_low_to_high());
+//    					  model.addAttribute("listings", listings);
+//    	          model.addAttribute("num", listings.size());
+//    	          System.out.println("called by address method");
+//    		  }
+//    		  
+//    		  List<Listing> listings = listingRepo.findByAdd();
+//    		  
     		  
-    		  if(lq.getLatitude() != 0.0 && lq.getLongitude() != 0.0) long_lat = true;
+//    		  System.out.println(listings);
     		  
     		  // initialize a listing object
-    		  Listing listing = new Listing();
-    		  // we want only active listings
-        	  listing.setActive(true);
-        	  System.out.println(lq.getStreet_name());
-        	  if(lq.getStreet_name() != null && lq.getStreet_name().length()> 0) listing.setStreet_name(lq.getStreet_name());
-        	  if(lq.getStreet_num() > 0) listing.setStreet_num(lq.getStreet_num());
-        	  if(lq.getPostal_code_area()!= null && lq.getPostal_code_area().length()>0) listing.setPostal_code_area(lq.getPostal_code_area());
-        	  if(lq.getPostal_code_num() != null && lq.getPostal_code_num().length()>0) listing.setPostal_code_num(lq.getPostal_code_num());
-        	  if(lq.getCity() != null&& lq.getCity().length()>0) listing.setCity(lq.getCity());
-        	  if(lq.getCountry() != null && lq.getCountry().length()>0) listing.setCountry(lq.getCountry());
-        	          	  
-        	  ExampleMatcher matcher = null;
+//    		  Listing listing = new Listing();
+//    		  // we want only active listings
+//        	  listing.setActive(true);
+//        	  System.out.println(lq.getStreet_name());
+//        	  if(lq.getStreet_name() != null && lq.getStreet_name().length()> 0) listing.setStreet_name(lq.getStreet_name());
+//        	  if(lq.getStreet_num() > 0) listing.setStreet_num(lq.getStreet_num());
+//        	  if(lq.getPostal_code_area()!= null && lq.getPostal_code_area().length()>0) listing.setPostal_code_area(lq.getPostal_code_area());
+//        	  if(lq.getPostal_code_num() != null && lq.getPostal_code_num().length()>0) listing.setPostal_code_num(lq.getPostal_code_num());
+//        	  if(lq.getCity() != null&& lq.getCity().length()>0) listing.setCity(lq.getCity());
+//        	  if(lq.getCountry() != null && lq.getCountry().length()>0) listing.setCountry(lq.getCountry());
+//        	          	  
+//        	  ExampleMatcher matcher = null;
+//        	  
+//        		  if(lq.getStreet_num() == 0) {
+//        			  matcher = ExampleMatcher.matching()
+//    	        			  .withIgnorePaths("id","longitude","latitude","street_num")
+//    	        			  .withIgnoreCase()
+//    	        			  .withIgnoreNullValues();   
+//        
+//        		  } else {
+//        			  matcher = ExampleMatcher.matching()
+//    	        			  .withIgnorePaths("id","longitude","latitude")
+//    	        			  .withIgnoreCase()
+//    	        			  .withIgnoreNullValues();
+//        			  
+//        		  }
         	  
-        	  if(!long_lat) {
-        		  if(lq.getStreet_num() == 0) {
-        			  matcher = ExampleMatcher.matching()
-    	        			  .withIgnorePaths("id","longitude","latitude","street_num")
-    	        			  .withIgnoreCase()
-    	        			  .withIgnoreNullValues();
-    	        			  
-        
-        		  } else {
-        			  matcher = ExampleMatcher.matching()
-    	        			  .withIgnorePaths("id","longitude","latitude")
-    	        			  .withIgnoreCase()
-    	        			  .withIgnoreNullValues();
-        			  
-        		  }
-        	  } else {
-        		  if(lq.getStreet_num() == 0) {
-        			  matcher = ExampleMatcher.matching()
-    	        			  .withIgnorePaths("id","street_num")
-    	        			  .withIgnoreCase()
-    	        			  .withIgnoreNullValues();
-        		  } else {
-        			  matcher = ExampleMatcher.matching()
-    	        			  .withIgnorePaths("id")
-    	        			  .withIgnoreCase()
-    	        			  .withIgnoreNullValues();
-        		  }
-        	  }
         	  
-        	 
-	        	
-        	  System.out.println(matcher.getIgnoredPaths());
+//        	 
+//        	  SELECT first_name,
+//        	          listing.id, 
+//        	          ( 3959 * acos( cos( radians(43.779247) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(-79.251600) ) + sin( radians(43.779247) ) * sin( radians( latitude ) ) ) ) 
+//        	          AS distance 
+//        	          FROM listing a
+//        	          inner join host 
+//        	          on host_id=host.id 
+//        	          HAVING distance  < 3 
+//        	          ORDER BY distance;
         	  
-        	  Example<Listing> example = Example.of(listing, matcher);
         	  
-        	  System.out.println(example);
-        	  List<Listing> listings = listingRepo.findAll(example);
-        	System.out.println(listings.size());
-            model.addAttribute("listings", listings);
-            model.addAttribute("num", listings.size());
+        	  
+//        	  System.out.println(matcher.getIgnoredPaths());
+//        	  
+//        	  Example<Listing> example = Example.of(listing, matcher);
+//        	  
+//        	  System.out.println(example);
+//        	  
+//        	  List<Listing> listings = listingRepo.findAll(example);
+//        	System.out.println(listings.size());
+//            model.addAttribute("listings", listings);
+//            model.addAttribute("num", listings.size());
   
     	 
     	return "query_listings";
@@ -387,5 +478,17 @@ public class MainController {
 //    	 
 //    	return "query_listings";
 //    }
+    
+    @GetMapping("bookingsReport")
+    public String getBookingReport(Model model) {
+    	return "booking_report";
+    }
+    
+//    @GetMapping("bookingsReport")
+//    public String getBookingReport(Model model) {
+//    	return "booking_report";
+//    }
+    
+    
 }
 

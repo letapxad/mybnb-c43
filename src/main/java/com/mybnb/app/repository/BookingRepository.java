@@ -10,7 +10,7 @@ import com.mybnb.app.models.Booking;
 import com.mybnb.app.models.Listing;
 import com.mybnb.app.models.Renter;
 
-public interface BookingRepository extends CrudRepository<Booking,Integer>{
+public interface BookingRepository extends CrudRepository<Booking,Integer>, BookingRepositoryCustom{
 
     
     @Query("SELECT s from Booking s where s.id = ?1")

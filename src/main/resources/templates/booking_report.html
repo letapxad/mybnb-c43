@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+
+
+<h1>
+	Booking Reports
+</h1>
+
+
+<form action="/bookingsReport" method="get">
+   
+	<p><b><u>Filters</u></b></p>
+	<input type="date" name="start_date" placeholder="Start Date">
+	<input type="date" name="end_date" placeholder="End Date"></br>
+	<p><b><u>Search by Zipcode within a city</u></b></p>
+
+	<input type="text" name="city" placeholder="city">
+	<input type="text" name="postal_code_area" placeholder="postal code area" maxlength="3">
+	<input type="text" name="postal_code_num" placeholder="postal code location" maxlength="3"></br>
+	
+	<button style="height:50px;width:300px">Search</button>
+</form>
+
+
+<h2 th:text="${num} + ' Bookings found'">
+	
+</h2>
+
+<div th:each="booking:${bookings}">
+<table border=1>
+	<tr>
+		<td>
+		<h3 th:text="${booking.start_date} + '  ' + ${booking.end_date}"></h3>
+		</td>
+	</tr>
+
+</table>
+
+</div>
+</body>
+</html>
