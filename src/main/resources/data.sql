@@ -33,7 +33,11 @@ use mybnbauto;
  		(1, "Canada", 20.00, "2019-08-02", 20.0, "Listing B", "Toronto", "DEF", "200", "Eglinton", 20, "Room", 2, 5),
  		(1, "Canada", 30.00, "2019-08-03", 30.0, "Listing C", "Toronto", "GHI", "300", "Military Trail", 30, "Apartment", 3, 5),
  		(0, "Canada", 40.00, "2019-08-04", 40.0, "Listing D", "Toronto", "JKL", "400", "Markham", 40, "Full House", 4, 1);
-		
+
+ insert into listing (active,city, country,latitude,longitude,name, postal_code_area, postal_code_num, street_name, street_num,type, unit, host_id) 
+ values (1,"Toronto","Canada",43.787389,-79.194757,"my home", "E3F","W3R","Mornelle ct", 100,"Apartment",2000, 2);		
+ 
+ 
  insert into availability (date, price, listing_id)
  	values
  		("2019-08-05", 2000.00, 1),

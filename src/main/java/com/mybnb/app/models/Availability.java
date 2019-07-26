@@ -4,6 +4,7 @@ import java.sql.Date;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
@@ -12,10 +13,11 @@ public class Availability {
   
   @Id
   private Date date;
-  private float price;
+  private double price;
   
   @Id
   @ManyToOne
+  @JoinColumn(name="listing_id")
   private Listing listing;
   
   public Date getDate() {
@@ -24,11 +26,11 @@ public class Availability {
   public void setDate(Date date) {
     this.date = date;
   }
-  public float getPrice() {
+  public double getPrice() {
     return price;
   }
-  public void setPrice(float price) {
-    this.price = price;
+  public void setPrice(double d) {
+    this.price = d;
   }
 
 public Listing getListing() {

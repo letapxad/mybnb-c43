@@ -7,6 +7,7 @@ import javax.persistence.Embedded;
 import javax.persistence.EmbeddedId;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 public class ListingId implements Serializable {
@@ -18,6 +19,7 @@ public class ListingId implements Serializable {
 	private int id;
 	
 	@ManyToOne
+	  @JoinColumn(name="listing_id")
     private Host host;
  
     // default constructor

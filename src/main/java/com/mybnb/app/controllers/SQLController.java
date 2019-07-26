@@ -29,7 +29,7 @@ public class SQLController {
 		try {
 			conn = DriverManager.getConnection(connection, "root", "");
 			st = conn.createStatement();
-			//return st;
+//			return st;
 		} catch (SQLException e) {
 			success = false;
 			System.err.println("Connection could not be established!");

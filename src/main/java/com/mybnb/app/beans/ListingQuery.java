@@ -6,6 +6,7 @@ import java.util.List;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.repository.query.Param;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -178,6 +179,11 @@ public class ListingQuery {
 
 	public void setPrice_low_to_high(boolean price_low_to_high) {
 		this.price_low_to_high = price_low_to_high;
+	}
+	public static  void main(String[] args) {
+//		System.out.println(new java.util.Date(2019,12,12). new java.util.Date(2019,12,15));
+//		DateTime dt = new DateTime(2019,12,15);
+//		dt.
 	}
 	
 }

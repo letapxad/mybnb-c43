@@ -100,7 +100,9 @@ public class CommandLine {
 	}
 	
 	//Private functions
-	
+	public SQLController getManager() {
+		return this.sqlMngr;
+	}
 	//Print menu options
 	private static void menu() {
 		System.out.println("=========MENU=========");
