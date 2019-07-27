@@ -14,7 +14,7 @@ public class Renter extends User {
 	private Long card_num;
 	private Date exp_date;
 	
-	@OneToMany(mappedBy = "renter", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "renter", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Booking> bookings;
 	
 //	 @OneToMany

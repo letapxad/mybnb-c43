@@ -22,10 +22,10 @@ public interface BookingRepository extends CrudRepository<Booking,Integer>, Book
     void cancelAllBooking(Renter renter);
 
     @Modifying
-    @Query(value = "insert into booking (renter_id, listing_id, host_id, start_date, end_date, cost, status) values (?1, ?2, ?3, ?4, ?5, ?6, ?7)", nativeQuery = true)
+    @Query(value = "insert into booking (renter_id, listing_id, host_id, start_date, end_date, cost, status, canceled_by) values (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)", nativeQuery = true)
     @Transactional
     void insertBooking(int renter_id, int listing_id, int host_id, Date start_date,
-        Date end_date, double cost, String status);
+        Date end_date, double cost, String status, String Canceled_by);
 
     @Query("select b from Booking b where renter_id = ?1")
     List<Booking> fidnByRenterId(int renter_id);
@@ -34,6 +34,16 @@ public interface BookingRepository extends CrudRepository<Booking,Integer>, Book
     @Query("update Booking b set b.status = 'Canceled' where b.id = ?1")
     @Transactional
     void cancelBooking(int booking_id);
+    
+    @Modifying
+    @Query("update Booking b set b.canceled_by = 'Renter' where b.id = ?1")
+    @Transactional
+    void setCancelRenter(int booking_id);
+    
+    @Modifying
+    @Query("update Booking b set b.canceled_by = 'Host' where b.id = ?1")
+    @Transactional
+    void setCancelHost(int booking_id);
     
     @Modifying
     @Query("delete from Booking b where b.renter = ?1")

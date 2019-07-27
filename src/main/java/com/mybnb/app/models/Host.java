@@ -19,8 +19,11 @@ public class Host extends User{
 	 * relationship this will be auto generated
 	 */
 	
-	@OneToMany(mappedBy="host", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy="host")//, cascade = CascadeType.ALL)
 	private List<Listing> listings;
+	
+	@OneToMany(mappedBy = "host")//, cascade = CascadeType.ALL)
+    private List<Booking> bookings;
 
 	public List<Listing> getListings() {
 		return listings;

@@ -16,7 +16,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormatter;
@@ -88,6 +89,9 @@ public class MainController {
 	
 	@Autowired
     private HostCommentRenterRepository hostCommentRenterRepo;
+	
+	@PersistenceContext
+	EntityManager entityManager;
 	
 	@GetMapping("/hosts")
 	public String index(Model model) {
@@ -207,7 +211,8 @@ public class MainController {
 	  //renterCommentHostRepo.deleteComment(SIN);
 	  //hostCommentRenterRepo.deleteComment(SIN);
 	  //renterCommentListingRepo.deleteComment(SIN);
-	  renterRepo.deleteRenter(SIN);
+	  //session.remove(renter);
+	  //renterRepo.deleteRenter(SIN);
       return "redirect:deleteRenter";
 	}
 	
@@ -330,7 +335,7 @@ public class MainController {
                   // readched here if no ava
       Host host = listingRepo.getHost(listing_id);
       int host_id = host.getId();
-      bookingRepo.insertBooking(renter_id, listing_id, host_id, start_date, end_date, cost, "Booked");
+      bookingRepo.insertBooking(renter_id, listing_id, host_id, start_date, end_date, cost, "Booked", null);
       date = st_date;
       while (date.compareTo(en_date) <= 0) {
         availabilityRepo.deleteAvailability(date, listing);
@@ -368,6 +373,7 @@ public class MainController {
         return "redirect:cancelBookingRenter";
       }
       //Listing listing = listingRepo.findByListingId(listing_id);
+      bookingRepo.setCancelRenter(booking_id);
       bookingRepo.cancelBooking(booking_id);
       return "redirect:cancelBookingRenter";
     }
@@ -395,6 +401,7 @@ public class MainController {
         return "redirect:cancelBookingHost";
       }
       //Listing listing = listingRepo.findByListingId(listing_id);
+      bookingRepo.setCancelHost(booking_id);
       bookingRepo.cancelBooking(booking_id);
       return "redirect:cancelBookingHost";
     }

@@ -36,7 +36,9 @@ public class Booking {
   
   private double cost;
   
-  @ManyToOne//(fetch = FetchType.LAZY)
+  private String canceled_by;
+  
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name="renter_id")
   private Renter renter;
   
