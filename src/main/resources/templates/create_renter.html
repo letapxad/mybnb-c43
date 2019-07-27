@@ -23,5 +23,21 @@
  
  <p th:text="${message}"></p>
  
+ <h1>List of renters</h1>
+  <table>
+  	<tr>
+  	    <th>ID</th>
+        <th>Firstname</th>
+        <th>Lastname</th> 
+        <th>Active</th>
+    </tr>
+    <tr th:each="renter: ${renters}">
+	    <td th:text="${renter.id}" />
+	    <td th:text="${renter.first_name}" />
+	    <td th:text="${renter.last_name}" />
+	    <td th:text="${renter.active}" />
+	</tr>
+</table>
+ 
 </body>
 </html>

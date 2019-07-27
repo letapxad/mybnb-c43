@@ -145,7 +145,8 @@ public class MainController {
 	public String createHostForm(Model model) {
 //	  hostRepo.insertHost(SIN, first_name, last_name, occupation, true, 10);
 	  //model.addAttribute("hosts",hostRepo.findAll());
-	  
+	  Iterable<Host> hosts = hostRepo.findAll();
+      model.addAttribute("hosts",hosts );
 	  return "create_host";
 	}
 	
@@ -173,6 +174,8 @@ public class MainController {
     public String createRenterForm(Model model) {
 //    hostRepo.insertHost(SIN, first_name, last_name, occupation, true, 10);
       //model.addAttribute("hosts",hostRepo.findAll());
+	  Iterable<Renter> renters = renterRepo.findAll();
+      model.addAttribute("renters", renters);
       return "create_renter";
     }
 	
@@ -201,6 +204,8 @@ public class MainController {
 	
 	@GetMapping("/deleteRenter")
 	public String deleteRenterForm(Model model) {
+	  Iterable<Renter> renter = renterRepo.findAll();
+      model.addAttribute("renter",renter);
 	  return "delete_renter";
 	}
 	
@@ -218,6 +223,8 @@ public class MainController {
 	
 	@GetMapping("/deleteHost")
     public String deleteHostForm(Model model) {
+	  Iterable<Host> hosts = hostRepo.findAll();
+      model.addAttribute("hosts",hosts );
       return "delete_host";
     }
     
@@ -230,18 +237,18 @@ public class MainController {
     }
 
     // not working
-//    @GetMapping("/createListing")
-//    public String createListingForm(Model  model, @RequestParam int host_id) {
+    @GetMapping("/createListing")
+    public String createListingForm(Model  model) {
 ////      System.out.println(host_sin + " "+ listing_id);
 //        Host host = hostRepo.findByHostId(host_id);
 //        
 //        model.addAttribute("host", host);
 //        //System.out.println(listing.getName());
-//        return "create_listing";
-//    }
+        return "create_listing";
+    }
     
     @PostMapping("/saveListing")
-    public String createListingForm(Model model, 
+    public String createListingForm(Model model,
         @RequestParam String name,
         @RequestParam String type,
         @RequestParam double latitude,
@@ -253,9 +260,10 @@ public class MainController {
         @RequestParam int unit,
         @RequestParam String postal_code_area,
         @RequestParam String postal_code_num,
-        @RequestParam Date listed_on,
-        @RequestParam int host_id) {
-      //listingRepo.insertListing(name, type, latitude, longitude, country, city, street_name, street_num, unit, postal_code_area, postal_code_num, listed_on, host_id);
+        @RequestParam int host_id)
+        {
+      java.util.Date listed_on = new java.util.Date();
+      listingRepo.insertListing(name, type, latitude, longitude, country, city, street_name, street_num, unit, postal_code_area, postal_code_num, listed_on, host_id);
       //listingRepo.save(listing);
       return "redirect:createListing";
     }
@@ -412,9 +420,15 @@ public class MainController {
     }
     
     @PostMapping("/upPricing")
-    public String updatePricingForm(Model model, @RequestParam float new_price, @RequestParam int listing_id) {
+    public String updatePricingForm(Model model, @RequestParam double new_price, @RequestParam int listing_id, @RequestParam Date date, @RequestParam int host_id, RedirectAttributes ra) {
       Listing listing = listingRepo.findByListingId(listing_id);
-      availabilityRepo.updatPricing(listing, new_price);
+      Host host = listing.getHost();
+      int host_id2 = host.getId();
+      if (host_id != host_id2) {
+        ra.addFlashAttribute("message", "You do not own this listing");
+        return "redirect:updatePricing";
+      }
+      availabilityRepo.updatePricing(listing, new_price, date);
       return "redirect:updatePricing";
     }
     
@@ -424,8 +438,14 @@ public class MainController {
     }
     
     @PostMapping("/maAvailable")
-    public String makeAvailableForm(Model model, @RequestParam java.util.Date new_date, @RequestParam float price, @RequestParam int listing_id) {
+    public String makeAvailableForm(Model model, @RequestParam Date new_date, @RequestParam double price, @RequestParam int listing_id, @RequestParam int host_id, RedirectAttributes ra) {
       Listing listing = listingRepo.findByListingId(listing_id);
+      Host host = listing.getHost();
+      int host_id2 = host.getId();
+      if (host_id != host_id2) {
+        ra.addFlashAttribute("message", "You do not own this listing");
+        return "redirect:makeAvailable";
+      }
       availabilityRepo.insertAvailability(new_date, price, listing_id);
       return "redirect:makeAvailable";
     }
@@ -436,8 +456,14 @@ public class MainController {
     }
     
     @PostMapping("/maUnavailable")
-    public String makeUnavailableForm(Model model, @RequestParam java.util.Date date, @RequestParam int listing_id) {
+    public String makeUnavailableForm(Model model, @RequestParam Date date, @RequestParam int listing_id, @RequestParam int host_id, RedirectAttributes ra) {
       Listing listing = listingRepo.findByListingId(listing_id);
+      Host host = listing.getHost();
+      int host_id2 = host.getId();
+      if (host_id != host_id2) {
+        ra.addFlashAttribute("message", "You do not own this listing");
+        return "redirect:makeUnavailable";
+      }
       availabilityRepo.deleteAvailability(date, listing);
       return "redirect:makeUnavailable";
     }
@@ -646,12 +672,18 @@ public class MainController {
     @PostMapping("/renterCommentHostPost")
     public String renterCommentHostForm(Model model, 
         @RequestParam String text, @RequestParam float rating,
-        @RequestParam int booking_id, RedirectAttributes ra) {
+        @RequestParam int booking_id, @RequestParam int renter_id, RedirectAttributes ra) {
       //Host host = listingRepo.getHost(booking_listing_id);
       //int host_id = host.getId();
       //System.out.println(hostId);
       java.util.Date added_on = new java.util.Date();
-      Booking booking = bookingRepo.getBookingById(booking_id);
+      Booking booking = bookingRepo.findByBookingId(booking_id);
+      Renter renter = booking.getRenter();
+      int renter_id2 = renter.getId();
+      if (renter_id2 != renter_id) {
+        ra.addFlashAttribute("message", "You have not made this booking.");
+        return "redirect:renterCommentHost";
+      }
       java.util.Date end_date = booking.getEnd_date();
       Calendar c = Calendar.getInstance(); 
       c.setTime(end_date); 
@@ -674,9 +706,15 @@ public class MainController {
     @PostMapping("/renterCommentListingPost")
     public String renterCommentListingForm(Model model, 
         @RequestParam String text, @RequestParam float rating,
-        @RequestParam int booking_id, RedirectAttributes ra) {
+        @RequestParam int booking_id, @RequestParam int renter_id, RedirectAttributes ra) {
       java.util.Date added_on = new java.util.Date();
-      Booking booking = bookingRepo.getBookingById(booking_id);
+      Booking booking = bookingRepo.findByBookingId(booking_id);
+      Renter renter = booking.getRenter();
+      int renter_id2 = renter.getId();
+      if (renter_id2 != renter_id) {
+        ra.addFlashAttribute("message", "You have not made this booking.");
+        return "redirect:renterCommentListing";
+      }
       java.util.Date end_date = booking.getEnd_date();
       Calendar c = Calendar.getInstance(); 
       c.setTime(end_date); 
@@ -698,9 +736,15 @@ public class MainController {
     @PostMapping("/hostCommentRenterPost")
     public String hostCommentRenterForm(Model model, 
         @RequestParam String text, @RequestParam float rating,
-        @RequestParam int booking_id, RedirectAttributes ra) {
+        @RequestParam int booking_id, @RequestParam int host_id, RedirectAttributes ra) {
       java.util.Date added_on = new java.util.Date();
-      Booking booking = bookingRepo.getBookingById(booking_id);
+      Booking booking = bookingRepo.findByBookingId(booking_id);
+      Host host = booking.getHost();
+      int host_id2 = host.getId();
+      if (host_id2 != host_id) {
+        ra.addFlashAttribute("message", "The booking made is not of your listing.");
+        return "redirect:hostCommentRenter";
+      }
       java.util.Date end_date = booking.getEnd_date();
       Calendar c = Calendar.getInstance(); 
       c.setTime(end_date); 

@@ -15,9 +15,9 @@ import org.springframework.data.repository.CrudRepository;
 public interface AvailabilityRepository extends CrudRepository<Availability, Integer>{
 
   @Modifying
-  @Query("update Availability a set a.price = ?2 where listing = ?1")
+  @Query("update Availability a set a.price = ?2 where listing = ?1 and a.date = ?3")
   @Transactional
-  void updatPricing(Listing listing, float new_price);
+  void updatePricing(Listing listing, double new_price, Date date);
 
   @Modifying
   @Query("delete from Availability a where a.date = ?1 and a.listing = ?2")
@@ -27,7 +27,7 @@ public interface AvailabilityRepository extends CrudRepository<Availability, Int
   @Modifying
   @Query(value = "insert into availability (date, price, listing_id) values (?1, ?2, ?3)", nativeQuery = true)
   @Transactional
-  void insertAvailability(Date new_date, float price, int listing_id);
+  void insertAvailability(Date new_date, double price, int listing_id);
 
   
   List<Availability> findByListingId(int listing_id);

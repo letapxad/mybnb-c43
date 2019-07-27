@@ -22,5 +22,21 @@
  
  <p th:text="${message}"></p>
  
+ <h1>List of hosts</h1>
+  <table>
+  	<tr>
+  	    <th>ID</th>
+        <th>Firstname</th>
+        <th>Lastname</th> 
+        <th>Active</th>
+    </tr>
+    <tr th:each="host: ${hosts}">
+	    <td th:text="${host.id}" />
+	    <td th:text="${host.first_name}" />
+	    <td th:text="${host.last_name}" />
+	    <td th:text="${host.active}" />
+	</tr>
+</table>
+ 
 </body>
 </html> 

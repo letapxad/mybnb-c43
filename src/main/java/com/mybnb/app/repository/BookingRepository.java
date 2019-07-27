@@ -50,7 +50,7 @@ public interface BookingRepository extends CrudRepository<Booking,Integer>, Book
     @Transactional
     void deleteBooking(Renter renter);
 
-    @Query("select b from Booking b where booking_id = ?1")
-    Booking getBookingById(int booking_id);
+    //@Query("select b from Booking b where booking_id = ?1")
+    //Booking getBookingById(int booking_id);
 
 }
