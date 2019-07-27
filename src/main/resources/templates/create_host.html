@@ -6,8 +6,6 @@
 </head>
 <body>
 
-<p th:text="${message}"></p>
-
 <h1>
 	Create Host
 </h1>
@@ -17,10 +15,12 @@
 	<input type="text" name="first_name" placeholder="First Name">
 	<input type="text" name="last_name" placeholder="Last Name">
 	<input type="text" name="occupation" placeholder="Occupation">
-	<input type="date" name="DOB">
+	<input type="date" name="DOB" placeholder="Date of Birth">>
 	<input type="text" name="active" value="1"  hidden>
 	<button>Create Host</button>
 </form>
+ 
+ <p th:text="${message}"></p>
  
 </body>
 </html> 

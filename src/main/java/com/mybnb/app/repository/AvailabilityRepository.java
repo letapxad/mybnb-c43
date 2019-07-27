@@ -31,4 +31,7 @@ public interface AvailabilityRepository extends CrudRepository<Availability, Int
 
   
   List<Availability> findByListingId(int listing_id);
+
+  @Query("select a from Availability a where a.date = ?1 and a.listing = ?2")
+  Availability getPrice(Date date, Listing listing);
 }

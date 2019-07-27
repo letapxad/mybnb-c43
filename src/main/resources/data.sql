@@ -49,8 +49,8 @@ use mybnbauto;
  insert into booking (cost, start_date, end_date, status, listing_id, renter_id, host_id)
  	values
  		--(2000.00, "2019-08-05", "2019-08-05", "Booked", 1, 1, 1),
- 		(3000.00, "2019-07-20", "2019-07-20", "Booked", 2, 5, 5),
- 		(4000.00, "2019-08-09", "2019-08-09", "Booked", 3, 5, 5);
+ 		(3000.00, "2019-07-20", "2019-07-21", "Booked", 2, 5, 5),
+ 		(4000.00, "2019-08-09", "2019-08-10", "Booked", 3, 5, 5);
  		
  insert into renter_comment_host (added_on , rating, text, booking_id)
  	values

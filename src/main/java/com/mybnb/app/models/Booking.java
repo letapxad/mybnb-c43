@@ -34,7 +34,7 @@ public class Booking {
   
   private Date end_date;
   
-  private float cost;
+  private double cost;
   
   @ManyToOne//(fetch = FetchType.LAZY)
   @JoinColumn(name="renter_id")
@@ -73,10 +73,10 @@ public class Booking {
 	public void setRenter(Renter renter) {
 		this.renter = renter;
 	}
-  public float getCost() {
+  public double getCost() {
     return cost;
   }
-  public void setCost(float cost) {
+  public void setCost(double cost) {
     this.cost = cost;
   }
   public Listing getListing() {
