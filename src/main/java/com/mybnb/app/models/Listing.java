@@ -32,7 +32,7 @@ public class Listing {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="host_id")
 	private Host host;
 	

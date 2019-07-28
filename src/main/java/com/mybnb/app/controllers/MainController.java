@@ -1,10 +1,9 @@
 package com.mybnb.app.controllers;
 
-//import java.sql.Date;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.sql.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +23,7 @@ import org.springframework.cglib.core.Predicate;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.MatcherConfigurer;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -50,11 +50,8 @@ import com.mybnb.app.models.Renter;
 import com.mybnb.app.repository.AmenityRepository;
 import com.mybnb.app.repository.AvailabilityRepository;
 import com.mybnb.app.repository.BookingRepository;
-import com.mybnb.app.repository.HostCommentRenterRepository;
 import com.mybnb.app.repository.HostRepository;
 import com.mybnb.app.repository.ListingRepository;
-import com.mybnb.app.repository.RenterCommentHostRepository;
-import com.mybnb.app.repository.RenterCommentListingRepository;
 import com.mybnb.app.repository.RenterRepository;
 
 @ControllerAdvice
@@ -77,15 +74,6 @@ public class MainController {
 	
 	@Autowired
 	private AmenityRepository amenityRepo;
-	
-	@Autowired
-	private RenterCommentHostRepository renterCommentHostRepo;
-	
-	@Autowired
-    private RenterCommentListingRepository renterCommentListingRepo;
-	
-	@Autowired
-    private HostCommentRenterRepository hostCommentRenterRepo;
 	
 	@GetMapping("/hosts")
 	public String index(Model model) {
@@ -173,11 +161,8 @@ public class MainController {
 	@PostMapping("/delRenter")
 	public String deleteRenterForm(Model model, @RequestParam int SIN) {
 	  Renter renter = renterRepo.findBySIN(SIN);
-	  //bookingRepo.deleteBooking(renter);
-	  //renterCommentHostRepo.deleteComment(SIN);
-	  //hostCommentRenterRepo.deleteComment(SIN);
-	  //renterCommentListingRepo.deleteComment(SIN);
-	  renterRepo.deleteRenter(SIN);
+	  bookingRepo.cancelAllBooking(renter);
+	  renterRepo.deactivateRenter(SIN);
       return "redirect:deleteRenter";
 	}
 	
@@ -191,6 +176,15 @@ public class MainController {
       Host host = hostRepo.findBySIN(SIN);
       listingRepo.deactivateAllListing(host);
       hostRepo.deactivateHost(SIN);
+      // hostRepo.deleteHost(SIN);
+      hostRepo.deleteById(host.getId());
+      List<Listing> listings = host.getListings();
+      Iterator<Listing> res = listings.iterator();
+
+      while(res.hasNext()){
+        systout
+        res.next().setHost(null);
+      }
       return "redirect:deleteHost";
     }
 
@@ -220,7 +214,7 @@ public class MainController {
         @RequestParam String postal_code_num,
         @RequestParam Date listed_on,
         @RequestParam int host_id) {
-      //listingRepo.insertListing(name, type, latitude, longitude, country, city, street_name, street_num, unit, postal_code_area, postal_code_num, listed_on, host_id);
+      listingRepo.insertListing(name, type, latitude, longitude, country, city, street_name, street_num, unit, postal_code_area, postal_code_num, listed_on, host_id);
       //listingRepo.save(listing);
       return "redirect:createListing";
     }
@@ -246,32 +240,19 @@ public class MainController {
     }
     
     @GetMapping("/createBooking")
-    public String createBookingForm(Model model, @ModelAttribute("message") String message) {
-      model.addAttribute("message", message);
+    public String createBookingForm(Model model) {
       return "create_booking";
     }
     
     @PostMapping("/saveBooking")
-    public String createBookingForm(Model model,@ModelAttribute("message") String message, @RequestParam int renter_id, @RequestParam int listing_id, @RequestParam Date start_date, @RequestParam Date end_date, @RequestParam float cost, RedirectAttributes redirectAttributes) {
-      List<Availability> availabilities = availabilityRepo.findByListingId(listing_id);
-      
-      
-      
-      // generate a list of dates from start_date to (endate - 1)
-      // for each date in dates:
-            // for ava in avas
-                  // ava.getDAte == date
-                          //break;
-                  // readched here if no ava
-      Host host = listingRepo.getHost(listing_id);
-      int host_id = host.getId();
-      bookingRepo.insertBooking(renter_id, listing_id, host_id, start_date, end_date, cost, 10, "Booked");
+    public String createBookingForm(Model model, RedirectAttributes redirAttrs, @RequestParam int renter_id, @RequestParam int listing_id, @RequestParam(required=false) Date start_date, @RequestParam(required=false) Date end_date, @RequestParam float cost) {
+      Iterable<Availability> listings = availabilityRepo.findAll();
+      //bookingRepo.insertBooking(renter_id, listing_id, start_date, end_date, cost, 10, "Booked");
       Listing listing = listingRepo.findByListingId(listing_id);
       availabilityRepo.deleteAvailability(start_date, listing);
       //availabilityRepo.deleteAvailability(end_date, listing);
-//      model.addAttribute("message", "this is a message");
-      redirectAttributes.addFlashAttribute("message", "this is a message");
-      return "create_booking";
+      redirAttrs.addFlashAttribute("message", "This is message from flash");
+      return "redirect:createBooking";
     }
     
     @GetMapping("/cancelBooking")
@@ -398,7 +379,6 @@ public class MainController {
     			  System.out.println(mqb.toString() + qfilter.toString());
     			  List<Listing> listings = listingRepo.findByCustomQuery(mqb.toString(), qfilter.toString());
     			  
-    			  
     			  model.addAttribute("listings", listings);
     	          model.addAttribute("num", listings.size());
     	  
@@ -478,94 +458,68 @@ public class MainController {
     	return "query_listings";
     }
     
-//    @InitBinder
-//    public void initBinder(WebDataBinder binder) {
-//    	System.out.println("binedr got called");
-//        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
-//    }
-    
-    
-//  queries to support
-//    @PostMapping("searchListings")
-//    public String queryListings(Model model, @ModelAttribute ListingQuery lq) {
-//    	
-//    	  if(lq!=null) {
-//    		  Listing listing = new Listing();
-//        	  listing.setActive(true);
-//        	  if(lq.getCity() != null) listing.setCity(lq.getCity());
-//        	  if (lq.getCountry() != null) listing.setCountry(lq.getCountry());
-//        	  if(lq.getStreet_name() != null) listing.setStreet_name(lq.getStreet_name());
-//        	  ExampleMatcher matcher = ExampleMatcher.matching();
-//        	  
-//        	  Example<Listing> example = Example.of(listing, matcher);
-//        	  
-//        	  List<Listing> listings = listingRepo.findAll(example);
-//        	System.out.println(listings.size());
-//            model.addAttribute("listings", listings);
-//    	  }
-//    	  System.out.println("lq was null");
-//    	 
-//    	return "query_listings";
-//    }
-    
-    @GetMapping("bookingsReport")
-    public String getBookingReport(Model model) {
+    @GetMapping("reports")
+    public String getReportsForm(Model model) {
+
     	return "booking_report";
     }
     
-//    @GetMapping("bookingsReport")
-//    public String getBookingReport(Model model) {
-//    	return "booking_report";
-//    }
-    
-    
-    
-    @GetMapping("/renterCommentHost")
-    public String renterCommentHostForm(Model model) {
-      return "renter_comment_host";
+    @PostMapping("bookingsReport")
+    public String getBookingReport(
+      Model model, RedirectAttributes redirAttrs,
+      @RequestParam(value="city", required=false) String city,
+      @RequestParam(value="zipArea", required=false) String zipArea,
+      @RequestParam(value="zipNum", required=false) String zipNum,
+      @RequestParam(value="startDate", required=false) Date startDate,
+      @RequestParam(value="endDate", required=false) Date endDate){
+      
+      StringBuilder sb = new StringBuilder();
+      sb.append("SELECT * FROM booking inner join listing l on listing_id=l.id ");
+      sb.append(" where start_date >= '" + startDate + "' and end_date <=  '" + endDate + "' ");
+      if(city.length() > 0)
+        sb.append(" and l.city='" + city+ "'");
+      if(zipArea.length()>0)
+        sb.append(" and l.postal_code_area='" + zipArea +"'");
+      if(zipNum.length() > 0)
+        sb.append(" and l.postal_code_num='" + zipNum+ "'");
+
+      List<Booking> bookings = bookingRepo.getBookingReport(sb.toString(), "");
+      System.out.println(city);
+      
+      redirAttrs.addFlashAttribute("num", bookings.size());
+      redirAttrs.addFlashAttribute("bookings", bookings);
+    	return "redirect:reports";
+    }
+
+
+    @PostMapping("listingsReport")
+    public String getListingReport(
+      Model model, RedirectAttributes redirAttrs,
+      @RequestParam(value="city", required=false) String city,
+      @RequestParam(value="zipArea", required=false) String zipArea,
+      @RequestParam(value="zipNum", required=false) String zipNum,
+      @RequestParam(value="country", required=false) String country){
+      
+      StringBuilder sb = new StringBuilder();
+      sb.append("SELECT * FROM listing l where 1 ");
+      if(country.length()>0)
+        sb.append(" AND l.country='" + country + "'");
+        if(city.length() > 0)
+        sb.append(" AND l.city='" + city+ "'");
+      if(zipArea.length()>0)
+        sb.append(" AND l.postal_code_area='" + zipArea +"'");
+      if(zipNum.length() > 0)
+        sb.append(" AND l.postal_code_num='" + zipNum+ "'");
+        System.out.println(sb.toString());
+      List<Listing> listings = listingRepo.findByCustomQuery(sb.toString(), "");
+        System.out.println(listings);
+      System.out.println(city);
+      System.out.println(listings.size());
+      redirAttrs.addFlashAttribute("listingCount", listings.size());
+      redirAttrs.addFlashAttribute("listings", listings);
+    	return "redirect:reports";
     }
     
-    @PostMapping("/renterCommentHostPost")
-    public String renterCommentHostForm(Model model, 
-        @RequestParam String text, @RequestParam float rating,
-        @RequestParam int booking_id) {
-      //Host host = listingRepo.getHost(booking_listing_id);
-      //int host_id = host.getId();
-      //System.out.println(hostId);
-      java.util.Date added_on = new java.util.Date();
-      renterCommentHostRepo.insertComment(added_on, rating, text, booking_id);
-      //renterCommentListingRepo.insertComment(added_on, rating, text, booking_listing_id, booking_renter_id, host_id);
-      return "redirect:renterCommentHost";
-    }
     
-    @GetMapping("/renterCommentListing")
-    public String renterCommentListingForm(Model model) {
-      return "renter_comment_listing";
-    }
-    
-    @PostMapping("/renterCommentListingPost")
-    public String renterCommentListingForm(Model model, 
-        @RequestParam String text, @RequestParam float rating,
-        @RequestParam int booking_id) {
-      //Host host = listingRepo.getHost(booking_listing_id);
-      //int host_id = host.getId();
-      java.util.Date added_on = new java.util.Date();
-      renterCommentListingRepo.insertComment(added_on, rating, text, booking_id);
-      return "redirect:renterCommentListing";
-    }
-    
-    @GetMapping("/hostCommentRenter")
-    public String hostCommentRenterForm(Model model) {
-      return "host_comment_renter";
-    }
-    
-    @PostMapping("/hostCommentRenterPost")
-    public String hostCommentRenterForm(Model model, 
-        @RequestParam String text, @RequestParam float rating,
-        @RequestParam int booking_id) {
-      java.util.Date added_on = new java.util.Date();
-      hostCommentRenterRepo.insertComment(added_on, rating, text, booking_id);
-      return "redirect:hostCommentRenter";
-    }
 }
 

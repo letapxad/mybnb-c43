@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
@@ -19,11 +20,27 @@ public class Host extends User{
 	 * relationship this will be auto generated
 	 */
 	
-	@OneToMany(mappedBy="host", cascade = CascadeType.ALL)
+	@OneToMany(cascade=CascadeType.ALL, 
+			   fetch = FetchType.LAZY, 
+			   mappedBy = "host")
 	private List<Listing> listings;
 
 	public List<Listing> getListings() {
 		return listings;
+	}
+
+	public void removeListing(Listing listing){
+		this.listings.remove(listing);
+		listing.setHost(null);
+		System.out.println("trying to remove listing");
+		System.out.println(listing.getId());
+	}
+
+	public void addListing(Listing listing){
+		this.listings.add(listing);
+		listing.setHost(this);
+		System.out.println("trying to remove listing");
+		System.out.println(listing.getId());
 	}
 
 	public void setListings(List<Listing> listings) {

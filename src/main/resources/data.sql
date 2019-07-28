@@ -38,34 +38,34 @@ use mybnbauto;
  values (1,"Toronto","Canada",43.787389,-79.194757,"my home", "E3F","W3R","Mornelle ct", 100,"Apartment",2000, 2);		
  
  
- insert into availability (date, price, listing_id)
- 	values
- 		("2019-08-05", 2000.00, 1),
- 		("2019-08-06", 2000.00, 1),
- 		("2019-08-07", 3000.00, 2),
- 		("2019-08-08", 3000.00, 2),
- 		("2019-08-09", 4000.00, 3),
- 		("2019-08-10", 4000.00, 3);
+--  insert into availability (date, price, listing_id)
+--  	values
+--  		("2019-08-05", 2000.00, 1),
+--  		("2019-08-06", 2000.00, 1),
+--  		("2019-08-07", 3000.00, 2),
+--  		("2019-08-08", 3000.00, 2),
+--  		("2019-08-09", 4000.00, 3),
+--  		("2019-08-10", 4000.00, 3);
 		
- insert into booking (cost, start_date, end_date, status, listing_id, renter_id, host_id)
- 	values
- 		(2000.00, "2019-08-05", "2019-08-05", "Booked", 1, 1, 1),
- 		(3000.00, "2019-08-07", "2019-08-07", "Booked", 2, 5, 5),
- 		(4000.00, "2019-08-09", "2019-08-09", "Booked", 3, 5, 5);
+--  insert into booking (cost, start_date, end_date, status, listing_id, renter_id, host_id)
+--  	values
+--  		(2000.00, "2019-08-05", "2019-08-09", "Booked", 1, 1, 1),
+--  		(3000.00, "2019-08-07", "2019-08-015", "Booked", 2, 5, 5),
+--  		(4000.00, "2019-08-09", "2019-08-011", "Booked", 3, 5, 5);
  		
- insert into renter_comment_host (added_on , rating, text, booking_id)
- 	values
- 		("2019-07-29", 5, "You are a great host", 1),
- 		("2019-07-29", 1, "You are a bad host", 2);
+--  insert into renter_comment_host (added_on , rating, text, booking_id)
+--  	values
+--  		("2019-07-29", 5, "You are a great host", 1),
+--  		("2019-07-29", 1, "You are a bad host", 2);
  		
- insert into renter_comment_listing (added_on , rating, text, booking_id)
- 	values
- 		("2019-07-29", 5, "I loved it", 1),
- 		("2019-07-29", 1, "I hated it", 2);
+--  insert into renter_comment_listing (added_on , rating, text, booking_id)
+--  	values
+--  		("2019-07-29", 5, "I loved it", 1),
+--  		("2019-07-29", 1, "I hated it", 2);
  		
- insert into host_comment_renter (added_on , rating, text, booking_id)
- 	values
- 		("2019-07-29", 5, "You are a great renter", 1),
- 		("2019-07-29", 1, "You are a bad renter", 2);
+--  insert into host_comment_renter (added_on , rating, text, booking_id)
+--  	values
+--  		("2019-07-29", 5, "You are a great renter", 1),
+--  		("2019-07-29", 1, "You are a bad renter", 2);
  		
  
