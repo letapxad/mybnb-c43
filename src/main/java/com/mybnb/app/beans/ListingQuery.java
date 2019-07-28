@@ -16,6 +16,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.mybnb.app.models.Amenity;
+import com.mybnb.app.models.Amenity.Name;
 
 
 public class ListingQuery {
@@ -33,44 +34,46 @@ public class ListingQuery {
 	private String postal_code_area;
 	
 	private String postal_code_num;
-	
+
+	private List<String> amenitiesList;
+
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date checkin_date;
-	
+
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date checkout_date;
 
-//	@Min(-180)
-//	@Max(180)
-	@NumberFormat(pattern="###.####")
+	// @Min(-180)
+	// @Max(180)
+	@NumberFormat(pattern = "###.####")
 	private double longitude;
-	
-//	@Min(-90)
-//	@Max(90)
-	@NumberFormat(pattern="###.####")
+
+	// @Min(-90)
+	// @Max(90)
+	@NumberFormat(pattern = "###.####")
 	private double latitude;
-	
+
 	@Min(1)
 	private int distance;
-	
+
 	@Min(0)
 	private double min_cost;
-	
+
 	@Min(1000000)
 	private double max_cost;
-	
-	private boolean price_low_to_high;
 
-//	public List<Amenity> getAmenities() {
-//		return amenities;
-//	}
-//
-//	public void setAmenities(List<Amenity> amenities) {
-//		this.amenities = amenities;
-//	}
+	private boolean price_low_to_high;
 
 	public int getStreet_num() {
 		return street_num;
+	}
+
+	public List<String> getAmenitiesList() {
+		return amenitiesList;
+	}
+
+	public void setAmenitiesList(List<String> amenitiesList) {
+		this.amenitiesList = amenitiesList;
 	}
 
 	public void setStreet_num(int street_num) {

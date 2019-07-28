@@ -40,6 +40,9 @@
 	<input type="text" name="max_cost" placeholder="max cost"></br></br>
 	<input type="radio" name="price_low_to_high" value="true" checked="true">Price low to high
 	<input type="radio" name="price_low_to_high" value="false"> Price high to low<br></br>
+	<div th:each="amenity:${amenities}">
+		<input type="checkbox" name="amenitiesList" th:value="${amenity.name}" checked><span th:text="${amenity.name}"></span>
+	</div>
 	<button style="height:50px;width:300px">Search</button>
 </form>
 

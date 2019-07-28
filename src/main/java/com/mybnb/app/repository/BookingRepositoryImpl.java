@@ -10,14 +10,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mybnb.app.models.Booking;
 
-public class BookingRepositoryImpl implements BookingRepositoryCustom{
-	 @PersistenceContext
+public class BookingRepositoryImpl implements BookingRepositoryCustom {
+	 
+	@PersistenceContext
 	 public EntityManager em;
 
 	@Transactional
 	@Override
 	public void refresh(Booking booking) {
 		// TODO Auto-generated method stub
+		em.refresh(booking);
 
 	}
 

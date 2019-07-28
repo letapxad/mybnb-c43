@@ -13,60 +13,95 @@
 
 <ol>
 	<li>
-		<h3>Bookings Report by</h3>
+		<h3><u>Bookings Report by</u></h3>
 		<form action="/bookingsReport" method="post">
    
-			<p><b><u>Date range</u></b></p>
+			<p><b><i>Date range</i></b></p>
 			<input type="date" name="startDate" placeholder="Start Date" value="2019-01-01">
 			<input type="date" name="endDate" placeholder="End Date" value="2019-12-31"></br>
-			<p><b><u>Zip code within a city</u></b></p>
+			<p><b><i>Refine by Zipcode within a city</i></b></p>
 			<input type="text" name="city" placeholder="city">
 			<input type="text" name="zipArea" placeholder="postal code area" maxlength="3">
-			<input type="text" name="zipNum" placeholder="postal code location" maxlength="3">
+			<input type="text" name="zipNum" placeholder="postal code location" maxlength="3"><br><br>
 			
 			<!-- <button style="height:50px;width:300px">Search</button> -->
 			<button >Generate booking report</button>
 		</form>
+		<div th:if="${bookings}" style="border: 2px solid black; margin-top: 4px">
+			<h2  th:text="${num} + ' Bookings found'"></h2>
+			<div th:each="booking:${bookings}">
+			<table border=1>
+				<tr>
+					<td>
+					<h3 th:text="${booking.start_date} + '  ' + ${booking.end_date}"></h3>
+					</td>
+				</tr>
+	
+			</table>
+			</div>
+		</div>
+		
 	</li>
 	<li>
-		<h3>Listings Count by</h3>
+		<h3><u>Listings Count by</u></h3>
 		<form action="/listingsReport" method="post">
    
-			<p><b><u>Zip code within a city</u></b></p>
+			<p><b><i>Refine by zip code within a city</i></b></p>
 			<label for="country">Country</label>
-			<input type="text" name="country" placeholder="country"><br>
+			<input type="text" name="country" placeholder="country">
 			<label for="city">City</label>
-			<input type="text" name="city" placeholder="city"><br>
+			<input type="text" name="city" placeholder="city"><br><br>
 			<label for="postal code area">Postal Area</label>
-			<input type="text" name="zipArea" placeholder="postal code area" maxlength="3"><br>
+			<input type="text" name="zipArea" placeholder="postal code area" maxlength="3">
 			<label for="postal code location">Postal location</label>			
-			<input type="text" name="zipNum" placeholder="postal code location" maxlength="3"><br>
+			<input type="text" name="zipNum" placeholder="postal code location" maxlength="3"><br><br>
 			
 			<!-- <button style="height:50px;width:300px">Search</button> -->
 			<button >Generate Listings report</button>
 			<h2 th:if="${listingCount >= 0}" th:text="${listingCount} + ' Listings found'"></h2>
 		</form>
 	</li>
-	<li></li>
+	<li>
+		<h3>Rank Hosts by total number listings per</h3>
+		<form action="/hostRankReport">
+			<p><b><i>Country</i></b></p>
+			<input type="text" name="city" placeholder="city"><br>
+			<p><b><i>Refine by City</i></b></p>
+			<input type="text" name="city" placeholder="city"><br><br>
+			<button >Rank Hosts</button>
+		</form>
+		
+	</li>
 	<li>
 		<h3>Malicious listings by city and counry</h3>
 		
 	</li>
+	<li>
+		<h3>temp</h3>
+	</li>
+	<li>
+		<h3><u>Cancellation Report</u></h3>
+		<form action="cancelReport" method="POST">
+			<p><b><i>Select a year</i></b></p>
+			<input type="Number" name="year" value="2019"><br><br>
+			<button >Get Cancellation report</button>
+		</form>
+
+		<div th:if="${hc}" style="border: 2px solid black; margin-top: 4px">
+				
+				<div th:each="record:${hc}">
+				<table border=1>
+					<tr>
+						<td>
+						<h3 th:text="${record.first_name} + '  ' + ${record.last_name}"></h3>
+						</td>
+					</tr>
+		
+				</table>
+				</div>
+			</div>
+
+	</li>
 </ol>
-
-
-
-<h2 th:if="${bookings}" th:text="${num} + ' Bookings found'"></h2>
-<div th:each="booking:${bookings}">
-<table border=1>
-	<tr>
-		<td>
-		<h3 th:text="${booking.start_date} + '  ' + ${booking.end_date}"></h3>
-		</td>
-	</tr>
-
-</table>
-</div>
-
 </body>
 </html>

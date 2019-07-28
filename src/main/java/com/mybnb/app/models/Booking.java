@@ -25,7 +25,7 @@ public class Booking {
   @GeneratedValue(strategy=GenerationType.IDENTITY)
   private int id;
   
-  private enum Status {Booked, Canceled;}
+  private enum Status {Booked, Cancelled;}
   
   @Enumerated(EnumType.STRING)
   private Status status;
@@ -36,24 +36,32 @@ public class Booking {
   
   private double cost;
   
-  private String canceled_by;
-  
+  private String cancelled_by;
+
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name="renter_id")
+  @JoinColumn(name = "renter_id")
   private Renter renter;
-  
+
   @ManyToOne
-  @JoinColumn(name="listing_id")
+  @JoinColumn(name = "listing_id")
   private Listing listing;
-  
+
   @ManyToOne
-  @JoinColumn(name="host_id")
+  @JoinColumn(name = "host_id")
   private Host host;
-  
-  
+
   public Host getHost() {
     return host;
   }
+
+  public String getCancelled_by() {
+    return cancelled_by;
+  }
+
+  public void setCancelled_by(String cancelled_by) {
+    this.cancelled_by = cancelled_by;
+  }
+
   public void setHost(Host host) {
     this.host = host;
   }

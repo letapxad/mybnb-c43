@@ -1,16 +1,15 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Getting Started: Serving Web Content</title>
+    <title>CSCC43 Database Project MyBnB Summer 2019</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-<h1>List of hosts</h1>
-  <table>
-    <tr th:each="host: ${hosts}">
-	    <td th:text="${host.SIN}" />
-	    <td th:text="${host.first_name}" />
-	</tr>
-</table>
+<h1>Welcome to MyBnB</h1>
+  <ul>
+    <li><a href="/searchListings">Queries</a></li>
+    <li><a href="/reports">Reports</a></li>
+
+  </ul>
 </body>
 </html>

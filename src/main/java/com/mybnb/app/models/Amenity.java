@@ -12,18 +12,17 @@ import javax.persistence.JoinTable;
 @Entity
 public class Amenity {
   
-  private enum Names {
+  public enum Name {
 	  Towel, Bed_sheets, Soap, Toilet_paper, Pillows, Wifi, 
-    Shampoo, Closet, Drawers, TV, Heat, Air_conditioning, Breakfast, 
+    Shampoo, Closet, Drawers, TV, Heat, Air_Conditioning, Breakfast, 
     Coffee, Tea, Desk, Fireplace, Iron, Hair_dryer, Private_entrance, 
     Smoke_detector, Carbon_monoxide_detector, First_aid_kit, 
     Fire_extinguisher, Lock_on_bedroom_door;
-	  
   }
   
   @Id
   @Enumerated(EnumType.STRING)
-  private Names name;
+  private Name name;
   
   @ManyToMany(mappedBy="amenities")
   private List<Listing> listings;
@@ -34,5 +33,14 @@ public class Amenity {
   public void setListings(List<Listing> listings) {
   	this.listings = listings;
   }
+
+  public Name getName() {
+    return name;
+  }
+
+  public void setName(Name name) {
+    this.name = name;
+  }
+
   
 }
