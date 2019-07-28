@@ -37,12 +37,12 @@ public interface ListingRepository extends JpaRepository<Listing,Integer>, Query
     void deactivateAllListing(Host host);
 
 	@Modifying
-	@Query(value = "insert into listing (name, type, latitude, longitude, country, city, street_name, street_num, unit, postal_code_area, postal_code_num, listed_on) values (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13)", nativeQuery = true)
+	@Query(value = "insert into listing (name, type, latitude, longitude, country, city, street_name, street_num, unit, postal_code_area, postal_code_num, listed_on, host_id, active) values (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, 1)", nativeQuery = true)
 	@Transactional
     void insertListing(String name, String type, double latitude,
         double longitude, String country, String city, String street_name,
         int street_num, int unit, String postal_code_area, String postal_code_num,
-        Date listed_on, int host_id);
+        java.util.Date listed_on, int host_id);
 	
 	@Modifying
 	@Query("delete from Listing l where l.id = ?1")

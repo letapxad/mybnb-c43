@@ -10,11 +10,17 @@
 </h1>
 
 <form action="/maAvailable" method="POST">
+	<input type="text" name="host_id" placeholder="Your ID">
 	<input type="text" name="new_date" placeholder="New Date">
 	<input type="text" name="price" placeholder="Price">
 	<input type="text" name="listing_id" placeholder="Listing ID">
 	<button>Make Available</button>
 </form>
+
+<p>Price suggestion for your listing per day:</p>
+<p th:text="${avg_price}"></p>
+
+<p th:text="${message}"></p>
  
 </body>
 </html>

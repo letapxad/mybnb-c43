@@ -24,6 +24,9 @@ public class Host extends User{
 			   fetch = FetchType.LAZY, 
 			   mappedBy = "host")
 	private List<Listing> listings;
+	
+	@OneToMany(mappedBy = "host")//, cascade = CascadeType.ALL)
+    private List<Booking> bookings;
 
 	public List<Listing> getListings() {
 		return listings;

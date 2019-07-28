@@ -6,18 +6,16 @@
 </head>
 <body>
 <h1>
-	Make a Comment on Renter
+	Cancel a Booking
 </h1>
 
-<form action="/hostCommentRenterPost" method="POST">
-	<input type="text" name="host_id" placeholder="Your ID">
-	<input type="text" name="text" placeholder="Comment">
-	<input type="text" name="rating" placeholder="Rating">
+<form action="/canBookingHost" method="POST">
+	<input type="text" name="host_id" placeholder="Host ID">
 	<input type="text" name="booking_id" placeholder="Booking ID">
-	<button>Make Comment</button>
+	<button>Cancel</button>
 </form>
- 
-  <p th:text="${message}"></p>
+
+ <p th:text="${message}"></p>
  
 </body>
 </html>

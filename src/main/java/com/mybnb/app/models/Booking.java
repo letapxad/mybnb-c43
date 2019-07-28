@@ -34,9 +34,11 @@ public class Booking {
   
   private Date end_date;
   
-  private float cost;
+  private double cost;
   
-  @ManyToOne//(fetch = FetchType.LAZY)
+  private String canceled_by;
+  
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name="renter_id")
   private Renter renter;
   
@@ -49,6 +51,12 @@ public class Booking {
   private Host host;
   
   
+  public Host getHost() {
+    return host;
+  }
+  public void setHost(Host host) {
+    this.host = host;
+  }
   public Status getStatus() {
     return status;
   }
@@ -67,10 +75,10 @@ public class Booking {
 	public void setRenter(Renter renter) {
 		this.renter = renter;
 	}
-  public float getCost() {
+  public double getCost() {
     return cost;
   }
-  public void setCost(float cost) {
+  public void setCost(double cost) {
     this.cost = cost;
   }
   public Listing getListing() {

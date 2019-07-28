@@ -10,10 +10,14 @@
 </h1>
 
 <form action="/upPricing" method="POST">
+	<input type="text" name="host_id" placeholder="Your ID">
 	<input type="text" name="new_price" placeholder="New Price">
 	<input type="text" name="listing_id" placeholder="Listing ID">
+	<input type="date" name="date">
 	<button>Update</button>
 </form>
+
+<p th:text="${message}"></p>
  
 </body>
 </html>
