@@ -769,5 +769,28 @@ public class MainController {
       hostCommentRenterRepo.insertComment(added_on, rating, text, booking_id);
       return "redirect:hostCommentRenter";
     }
+    
+    @GetMapping("/addAmenity")
+    public String addAmenityForm(Model model) {
+      return "add_amenity";
+    }
+    
+    @PostMapping("/Amenity")
+    public String addAmenityForm(Model model, 
+        @RequestParam String name,
+        @RequestParam int listing_id, @RequestParam int host_id, RedirectAttributes ra) {
+      //java.util.Date added_on = new java.util.Date();
+      Listing listing = listingRepo.findByListingId(listing_id);
+      Host host = listing.getHost();
+      int host_id2 = host.getId();
+      if (host_id2 != host_id) {
+        ra.addFlashAttribute("message", "You do not own this listing.");
+        return "redirect:addAmenity";
+      }
+      amenityRepo.insertAmenity(name, listing_id);
+      return "redirect:addAmenity";
+    }
+    
+    
 }
 

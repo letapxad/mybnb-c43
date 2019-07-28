@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<h1>
+	Add amenity
+</h1>
+
+<form action="/Amenity" method="POST">
+	<input type="text" name="host_id" placeholder="Your ID">
+	<input type="text" name="name" placeholder="Amenity Name">
+	<input type="text" name="listing_id" placeholder="Listing ID">
+	<button>Add</button>
+</form>
+ 
+ <p th:text="${message}"></p>
+ 
+</body>
+</html>
