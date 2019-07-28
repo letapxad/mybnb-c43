@@ -246,8 +246,11 @@ public class MainController {
 //        model.addAttribute("host", host);
 //        //System.out.println(listing.getName());
       List<String> popular_amenities = amenityRepo.getPopularAmenity(new PageRequest(0,2));
+      //List<String> popular_amenities2 = amenityRepo.popularAmenity(new PageRequest(0,2));
       String popular_amenity1 = popular_amenities.get(0);
+      popular_amenity1 = popular_amenity1.substring(0, popular_amenity1.length()-2);
       String popular_amenity2 = popular_amenities.get(1);
+      popular_amenity2 = popular_amenity2.substring(0, popular_amenity2.length()-2);
       model.addAttribute("popular_amenity1", popular_amenity1);
       model.addAttribute("popular_amenity2", popular_amenity2);
       return "create_listing";

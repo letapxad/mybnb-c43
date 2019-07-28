@@ -12,5 +12,8 @@ public interface  AmenityRepository extends CrudRepository<Amenity, Integer>{
   @Query(value = "SELECT amenities_name, COUNT(*) AS magnitude FROM listing_amenities GROUP BY amenities_name ORDER BY magnitude desc", nativeQuery= true)
   List<String> getPopularAmenity(Pageable pageable);
   
+  //@Query(value = "select amenities_name from temp")
+  //List<String> popularAmenity(Pageable pageable);
+  
   
 }
