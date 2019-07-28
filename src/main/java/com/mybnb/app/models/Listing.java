@@ -53,7 +53,9 @@ public class Listing {
 	private String street_name;
 	private String unit;
 	private String city;
+	@Column(length = 3)
 	private String postal_code_area;
+	@Column(length = 3)
 	private String postal_code_num;
 	private String country;
 	private Date listed_on;

@@ -34,4 +34,10 @@ public interface AvailabilityRepository extends CrudRepository<Availability, Int
 
   @Query("select a from Availability a where a.date = ?1 and a.listing = ?2")
   Availability getPrice(Date date, Listing listing);
+  
+  @Query("select AVG(a.price) from Availability a")
+  double getAvgPrice();
+  
+  @Query("select MAX(a.price) from Availability a")
+  double getMaxPrice();
 }

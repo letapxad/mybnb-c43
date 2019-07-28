@@ -24,8 +24,9 @@ use mybnbauto;
  		("Drawers"),
  		("TV"), 
  		("Heat"),
- 		("Air_Conditioning"), 
-		("Breakfast");
+ 		("Air Conditioning"), 
+		("Breakfast"),
+		("Wi-fi");
 
  insert into listing (active, country, latitude, listed_on, longitude, name, city, postal_code_area, postal_code_num, street_name, street_num, type, unit, host_id) 
  	values 
@@ -66,5 +67,15 @@ insert into booking (cost, start_date, end_date, status, listing_id, renter_id, 
  	values
  		("2019-07-29", 5, "You are a great renter", 1);
  		--("2019-07-29", 1, "You are a bad renter", 2);
+ 		
+ insert into listing_amenities(amenities_name, listings_id)
+ 	values
+ 		("Wi-fi", 3),
+ 		("Air Conditioning", 3),
+ 		("TV", 2),
+ 		("Wi-fi", 2),
+ 		("Drawers", 2),
+ 		("Air Conditioning", 1);
+ 		
  		
  

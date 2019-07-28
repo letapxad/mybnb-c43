@@ -27,6 +27,7 @@ import org.springframework.cglib.core.Predicate;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.MatcherConfigurer;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -244,7 +245,12 @@ public class MainController {
 //        
 //        model.addAttribute("host", host);
 //        //System.out.println(listing.getName());
-        return "create_listing";
+      List<String> popular_amenities = amenityRepo.getPopularAmenity(new PageRequest(0,2));
+      String popular_amenity1 = popular_amenities.get(0);
+      String popular_amenity2 = popular_amenities.get(1);
+      model.addAttribute("popular_amenity1", popular_amenity1);
+      model.addAttribute("popular_amenity2", popular_amenity2);
+      return "create_listing";
     }
     
     @PostMapping("/saveListing")
@@ -265,6 +271,7 @@ public class MainController {
       java.util.Date listed_on = new java.util.Date();
       listingRepo.insertListing(name, type, latitude, longitude, country, city, street_name, street_num, unit, postal_code_area, postal_code_num, listed_on, host_id);
       //listingRepo.save(listing);
+      //double max_price = availabilityRepo.getMaxPrice();
       return "redirect:createListing";
     }
     
@@ -434,6 +441,8 @@ public class MainController {
     
     @GetMapping("/makeAvailable")
     public String makeAvailableForm(Model model) {
+      double avg_price = availabilityRepo.getAvgPrice();
+      model.addAttribute("avg_price", avg_price);
       return "make_availaible";
     }
     
