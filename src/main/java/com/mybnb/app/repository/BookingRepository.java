@@ -30,6 +30,10 @@ public interface BookingRepository extends CrudRepository<Booking,Integer>, Book
     @Query("select b from Booking b where renter_id = ?1")
     List<Booking> fidnByRenterId(int renter_id);
 
+    
+    @Query("select distinct id from Booking b where renter_id = ?1")
+    List<Integer> findByRenterDistinctRId(int renter_id);
+
     @Modifying
     @Query("update Booking b set b.status = 'Cancelled' where b.id = ?1")
     @Transactional
@@ -55,4 +59,15 @@ public interface BookingRepository extends CrudRepository<Booking,Integer>, Book
     @Query(value="select distinct host_id,id  from booking", nativeQuery = true)
     List<Booking> getBookigDax();
 
+    @Query( value="select renter_id,count(*) as cancel_count from Booking b where status='Cancelled' and cancelled_by='RENTER' group by b.renter_id  order by cancel_count  desc", nativeQuery = true)
+    List<Object[]> getRenterCancellation();
+
+    @Query( value="select host_id,count(*) as cancel_count from Booking b where status='Cancelled' and cancelled_by='HOST' group by b.host_id  order by cancel_count  desc", nativeQuery = true)
+    List<Object[]> getHostCancellation();
+
+    @Query(value=" select renter_id, count(id) AS count from booking where start_date>= ?1 and end_date<= ?2  group by renter_id order by count desc", nativeQuery = true)
+    List<Object[]> rankRentersByBookingCount(String start_date, String end_date);
+
+    @Query(value=" select renter_id, count(booking.id) AS count from booking inner join listing l on listing_id=l.id where start_date>= ?1 and end_date<= ?2  and city= ?3 group by renter_id order by count desc", nativeQuery = true)
+    List<Object[]> rankRentersByBookingCountInCity(String start_date, String end_date, String city);
 }

@@ -97,6 +97,8 @@ public class MainController {
 	
 	@GetMapping("/hosts")
 	public String index(Model model) {
+      List<Integer> res = bookingRepo.findByRenterDistinctRId(1);
+      System.out.println(res);
 		Iterable<Host> hosts = hostRepo.findAll();
 		model.addAttribute("hosts",hosts );
 		return "index";
@@ -235,12 +237,12 @@ public class MainController {
     @PostMapping("/delHost")
     public String deleteHostForm(Model model, @RequestParam int SIN) {
       Host host = hostRepo.findBySIN(SIN);
-      listingRepo.deactivateAllListing(host);
-      hostRepo.deactivateHost(SIN);
-      // hostRepo.deleteHost(SIN);
-      hostRepo.deleteById(host.getId());
-      List<Listing> listings = host.getListings();
-      Iterator<Listing> res = listings.iterator();
+      // listingRepo.deactivateAllListing(host);
+      // hostRepo.deactivateHost(SIN);
+      hostRepo.deleteHost(SIN);
+      // hostRepo.deleteById(host.getId());
+      // List<Listing> listings = host.getListings();
+      // Iterator<Listing> res = listings.iterator();
 
       // while(res.hasNext()){
       //   systout

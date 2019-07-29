@@ -77,7 +77,32 @@
 		
 	</li>
 	<li>
-		<h3>temp</h3>
+		<h3><u>Renter ranking by bookings</u></h3>
+		<form action="renterBookingRank" method="POST">
+			<p><b><i>Date range</i></b></p>
+			<input type="date" name="start_date" value="1970-01-01" required="true">
+			<input type="date" name="end_date" value="2025-12-31" required="true">
+			<p><b><i>Filter by city (at least two bookings in the range)</i></b></p>
+			<input type="text" name="city"  placeholder="Toronto">
+			<button >Rank renters by bookings</button>
+			<!-- <div th:if="${renters}" style="border: 2px solid black; margin-top: 4px"> -->
+			<table border=1 >
+					<!-- <tr th:if="${rentersrank}" th:each="index:${#numbers.sequence( 0, #arrays.length(rentersrank)-1)}">
+					    <td th:text="${rentersrank[index]}">List1Elm1</td>
+					    <td th:text="${ranks[index]}">List2Elm1</td>
+					</tr> -->
+				<tr th:if="${rentersrank}" th:each="r:${rentersrank}">
+					<td><p th:text="${r.id}"></p></td>
+					<td><p th:text="${r.first_name}"></p></td>
+					<td><p th:text="${r.last_name}"></p></td>
+					<!-- <td><p th:text="${r.last_name}"></p></td> -->
+					<!-- <td><p th:text="${renter.numBookings()"></p></td> -->
+				</tr>
+	
+			</table>
+		</div>
+		</form>
+		
 	</li>
 	<li>
 		<h3><u>Cancellation Report</u></h3>
@@ -86,21 +111,37 @@
 			<input type="Number" name="year" value="2019"><br><br>
 			<button >Get Cancellation report</button>
 		</form>
-
-		<div th:if="${hc}" style="border: 2px solid black; margin-top: 4px">
-				
-				<div th:each="record:${hc}">
-				<table border=1>
-					<tr>
-						<td>
-						<h3 th:text="${record.first_name} + '  ' + ${record.last_name}"></h3>
-						</td>
-					</tr>
 		
-				</table>
-				</div>
-			</div>
+		<h3 th:if="${renters}">Renter and Host Cancellations</h3>
 
+		<div >
+			<table border=1 th:each="renter:${renters}">
+
+			
+			<tr>
+				<td><span th:text="${renter.id}"></span></td>
+				<td><span th:text="${renter.first_name}"></span></td>
+				<td><span th:text="${renter.last_name}"></span></td>
+				<td><span th:text="${renter.getDistinctCancelledCount()}"></span></td>
+
+				
+			</tr>
+		</table>	
+
+		</div>
+
+		<div >
+			<table border=1 th:each="host:${hosts}">
+			<tr>
+				<td><span th:text="${host.id}"></span></td>
+				<td><span th:text="${host.first_name}"></span></td>
+				<td><span th:text="${host.last_name}"></span></td>
+				<td><span th:text="${host.getDistinctCancelledCount()}"></span></td>
+
+			</tr>
+			</table>	
+
+		</div>
 	</li>
 </ol>
 </body>

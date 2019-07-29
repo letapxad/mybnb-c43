@@ -15,7 +15,7 @@ public class Renter extends User {
 	private Long card_num;
 	private Date exp_date;
 	
-	@OneToMany(mappedBy = "renter", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "renter", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	private List<Booking> bookings;
 	
 //	 @OneToMany
@@ -33,4 +33,25 @@ public class Renter extends User {
 	public void setExp_date(Date exp_date) {
 		this.exp_date = exp_date;
 	}
+
+	public int getDistinctCancelledCount(){
+		int res = 0;
+		System.out.println(this.bookings);
+		for(Booking b: this.bookings){
+			System.out.println(b.getCancelled_by()=="RENTER");
+			System.out.println(b.getStatus().equals(Booking.Status.Cancelled));
+
+			if(b.getCancelled_by().equals("RENTER") && b.getStatus().equals(Booking.Status.Cancelled)){
+				res += 1;
+			System.out.println("found");
+
+			}
+		}
+		return res;
+	}
+
+
+	
+
+
 }

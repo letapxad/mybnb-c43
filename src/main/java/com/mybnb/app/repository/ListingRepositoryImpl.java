@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +17,10 @@ import com.mybnb.app.models.Listing;
 public class ListingRepositoryImpl implements ListingRepositoryCustom {
 
     @PersistenceContext
-    public EntityManager em;
+	public EntityManager em;
+	
+	@Autowired
+	private ListingRepository listingRepo;
 
     @Transactional
 	@Override
@@ -25,7 +29,8 @@ public class ListingRepositoryImpl implements ListingRepositoryCustom {
     	em.refresh(listing);
 		
 	}
-    
+	
+	@Override
     public List<Listing> findByCustomQuery(String mainQuery, String filters){
     	System.out.println(mainQuery);
     	System.out.println(filters);
@@ -33,6 +38,16 @@ public class ListingRepositoryImpl implements ListingRepositoryCustom {
     	Query query = em.createNativeQuery(mainQuery + filters, Listing.class);
     	List<Listing> res = query.getResultList();
     	return res;
+	}
+
+
+	@Override
+	public List<Object[]> findByListingQuery(String mainQuery){
+    	System.out.println(mainQuery);
+    	Query query = em.createNativeQuery(mainQuery);
+		List<Object[]> lids = query.getResultList();
+		// List<Listing> res = listingRepo.findAllById(lids);
+    	return lids;
     }
     
     

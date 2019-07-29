@@ -18,10 +18,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.OneToMany;
 import javax.persistence.Version;
+
+import org.hibernate.annotations.ForeignKey;
 import javax.persistence.ManyToMany;
 
 @Entity
@@ -32,6 +35,7 @@ public class Listing {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	
+	@ForeignKey(name = "fk_lis")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="host_id")
 	private Host host;

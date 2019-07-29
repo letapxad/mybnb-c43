@@ -59,6 +59,8 @@ public interface ListingRepository extends JpaRepository<Listing,Integer>, Query
 	
 	@Query(value="SELECT s.*,( 3959 * acos( cos( radians(?2) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?3) ) + sin( radians(?2) ) * sin( radians( latitude ) ) ) ) AS distance FROM Listing s HAVING distance  < ?1 ORDER BY distance",nativeQuery=true)
 	List<Listing> findByDistance(int distance, double lat, double lon);
+
+	
 	
 	
 	@Query(value="SELECT s.* from Listing s where "
@@ -68,10 +70,19 @@ public interface ListingRepository extends JpaRepository<Listing,Integer>, Query
 			+ " s.country = ?4 AND"
 			+ " s.postal_code_area = ?5 AND"
 			+ " s.postal_code_num = ?6",nativeQuery = true)
-	List<Listing> findByAddress(int street_num, String street_name, String city, String country, String postal_code_area,
-										String postal_code_num, boolean price_low_to_high);
+	List<Listing> findByAddress(int street_num, 
+								String street_name,
+								 String city, 
+								 String country, 
+								 String postal_code_area,
+								 String postal_code_num, 
+								 boolean price_low_to_high);
 	
-//	List<Listing> findByAddress(int street_num, String street_name, String city, String country, String postal_code_area,
+
+
+	
+
+										//	List<Listing> findByAddress(int street_num, String street_name, String city, String country, String postal_code_area,
 //			String postal_code_num, double min_cost, double max_cost ,boolean price_low_to_high);
 //	
 //	List<Listing> findByAddress(int street_num, String street_name, String city, String country, String postal_code_area,
@@ -81,5 +92,11 @@ public interface ListingRepository extends JpaRepository<Listing,Integer>, Query
 //	List<Listing> findByAvailabilty(Date checkin, Date checkout);
 	@Query("SELECT l.host from Listing l where l.id = ?1")
 	Host getHost(int booking_listing_id);
+
+
+	@Query(value="select l  FROM Listing l inner join Availability av inner join listing_amenities", nativeQuery = true)
+	List<Object[]> findForQuery(String q);
+
+
 	
 }

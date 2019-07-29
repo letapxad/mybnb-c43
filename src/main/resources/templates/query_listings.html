@@ -7,17 +7,24 @@
 <body>
 
 
+<nav>
+	<a href="/">Home</a>
+</nav>
+
+
+<h1 ht:text="${message}"></h1>
 <h1>
 	Search listings
 </h1>
 
 
-<form action="/searchListings" method="get" modelAttribute="lq">
+<form action="getListings" method="POST">
     <p><b><u>Search by Coordinates</u></b></p>
     <input type="text" name="latitude" placeholder="latitude" >
 	<input type="text" name="longitude" placeholder="longitude">
 
 	 <select name="distance">
+			<option value="5000">5000</option>
 		  <option value="5">5</option>
 		  <option value="25">25</option>
 		  <option value="50">50</option>
@@ -33,11 +40,14 @@
 	<input type="text" name="postal_code_num" placeholder="postal code location" maxlength="3"></br>
 	
 	<p><b><u>Filters</u></b></p>
-	<input type="date" name="checkin_date" placeholder="Checkin Date">
-	<input type="date" name="checkout_date" placeholder="Checkout Date"></br>
+	<p>Date range</p>
+	<input type="date" name="checkin_date" placeholder="Checkin Date" value="1980-01-01">
+	<input type="date" name="checkout_date" placeholder="Checkout Date" value="2000-12-01"></br>
 	
-	<input type="text" name="min_cost" placeholder="min cost" >
-	<input type="text" name="max_cost" placeholder="max cost"></br></br>
+	<p>Min cost</p>
+	<input type="text" name="min_cost" placeholder="min cost" value="15">
+	<p>Max cost</p>
+	<input type="text" name="max_cost" placeholder="max cost" value="5000"></br></br>
 	<input type="radio" name="price_low_to_high" value="true" checked="true">Price low to high
 	<input type="radio" name="price_low_to_high" value="false"> Price high to low<br></br>
 	<div th:each="amenity:${amenities}">
@@ -47,7 +57,7 @@
 </form>
 
 
-<h2 th:text="${num} + ' listings found'">
+<h2 th:if="${listings}" th:text="${listings.size()} + ' listings found'">
 	
 </h2>
 
@@ -60,7 +70,14 @@
 <span th:text="${listing.street_name}"></span>,
 <span th:text="${listing.city}"></span>, <span th:text="${listing.country}"></span>,
 <span th:text="${listing.postal_code_area}"></span> <span th:text="${listing.postal_code_num}"></span></p>
-		</td>
+<p >
+
+
+<div th:if="${listing.amenities}" th:each="amenity:${listing.amenities}">
+	<span th:text="${amenity.name}"></span>
+</div>
+<div th:unless="${listing.amenities}" th:text="'No amenities'"></div>
+</td>
 	</tr>
 
 </table>

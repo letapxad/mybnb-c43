@@ -20,33 +20,43 @@ public class Host extends User{
 	 * relationship this will be auto generated
 	 */
 	
-	@OneToMany(cascade=CascadeType.ALL, 
+	@OneToMany(mappedBy = "host", cascade=CascadeType.ALL, 
 			   fetch = FetchType.LAZY, 
-			   mappedBy = "host")
+			   orphanRemoval = true)
 	private List<Listing> listings;
 	
-	@OneToMany(mappedBy = "host")//, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "host",  fetch = FetchType.EAGER)//, cascade = CascadeType.ALL)
     private List<Booking> bookings;
 
 	public List<Listing> getListings() {
 		return listings;
 	}
 
-	public void removeListing(Listing listing){
-		this.listings.remove(listing);
-		listing.setHost(null);
-		System.out.println("trying to remove listing");
-		System.out.println(listing.getId());
-	}
+	// public void removeListing(Listing listing){
+	// 	this.listings.remove(listing);
+	// 	listing.setHost(null);
+	// }
 
-	public void addListing(Listing listing){
-		this.listings.add(listing);
-		listing.setHost(this);
-		System.out.println("trying to remove listing");
-		System.out.println(listing.getId());
-	}
+	// public void addListing(Listing listing){
+	// 	this.listings.add(listing);
+	// 	listing.setHost(this);
+	// 	System.out.println("trying to remove listing");
+	// 	System.out.println(listing.getId());
+	// }
 
 	public void setListings(List<Listing> listings) {
 		this.listings = listings;
+	}
+
+	public int getDistinctCancelledCount(){
+		int res = 0;
+		for(Booking b: this.bookings){
+
+			if(b.getCancelled_by().equals("HOST") && b.getStatus().equals(Booking.Status.Cancelled)){
+				res += 1;
+
+			}
+		}
+		return res;
 	}
 }

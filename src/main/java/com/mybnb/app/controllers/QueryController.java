@@ -27,6 +27,7 @@ import org.springframework.cglib.core.Predicate;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.MatcherConfigurer;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpRequest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
@@ -70,99 +71,235 @@ public class QueryController {
     private ListingRepository listingRepo;
     
     @Autowired
-	private AmenityRepository amenityRepo;
+    private AmenityRepository amenityRepo;
+    
+    @GetMapping("searchListings")
+    public String queryForm(Model model){
+        model.addAttribute("amenities", amenityRepo.findAll());
+
+        return "query_listings";
+    }
+
+
+    @GetMapping("error")
+    public String error(Model model){
+        return "redirect:/";
+    }
+
      // queries to support
-     @GetMapping("searchListings")
-     public String queryListingsForm(@ModelAttribute(name="lq") ListingQuery lq, BindingResult result,Model model) {
- //    	System.out.println(lq);
-         System.out.println(result.getAllErrors());
+     @PostMapping("getListings")
+    // public String queryListingsForm(@ModelAttribute(name="lq") ListingQuery lq, BindingResult result,Model model) {
+    public String queryListingsForm( Model model,
+        RedirectAttributes redirectAttr,
+        @RequestParam(value="street_num", required=false) Number street_num,
+        @RequestParam(value="city", required=false) String city,
+        @RequestParam(value="country", required=false) String country,
+        @RequestParam(value="street_name", required=false) String street_name,
+        @RequestParam(value="postal_code_area", required=false) String postal_code_area,
+        @RequestParam(value="postal_code_num", required=false) String postal_code_num,
+        @RequestParam(value="amenitiesList", required=false) List<String> amenitiesList,
+        @RequestParam(value="checkin_date", required=false)  String checkin_date,
+        @RequestParam(value="checkout_date", required=false)  String checkout_date,
+        @RequestParam(value="latitude", required=false) Number latitude,
+        @RequestParam(value="longitude", required=false) Number longitude,
+        @RequestParam(value="distance", required=false) Number distance,
+        @RequestParam(value="min_cost", required=false) Number min_cost,
+        @RequestParam(value="max_cost", required=false) Number max_cost,
+        @RequestParam(value="price_low_to_high", required=false) boolean price_low_to_high){
+                    
+        // check if there are coordinates are present
+        System.out.println(latitude);
+        System.out.println(street_name + street_name + city + country + postal_code_area + postal_code_num);
+        StringBuilder mqb = new StringBuilder(); //main query builder
+        mqb.append("SELECT a.*, av.* "); //all columns from 
+        
+        // sysout
+        // if lat lon provided we need to one more column
+        if (longitude != null && latitude != null){
+            mqb.append(", ( 3959 * acos( cos( radians(" + latitude+ ") ) "
+                + " * cos( radians( latitude ) ) "
+                + " * cos( radians( longitude ) "
+                + " - radians(" + longitude + ") ) "
+                + " + sin( radians(" + latitude+") ) "
+                + " * sin( radians( latitude ) ) ) ) "
+                + " AS distance ");
+        }
+        
+        
+        mqb.append(" FROM Listing a "); // selecting the listing table
+        mqb.append(" inner join Availability av on av.listing_id=a.id ");
+
+        
+        if(amenitiesList != null && amenitiesList.size() > 0){
+            Iterator<String> amenities = amenitiesList.iterator();
+            String alist = "(";
+            while(amenities.hasNext()){
+                alist += "'" + amenities.next()  +"',";
+            }
+            // System.out.println((alist));
+            alist = alist.substring(0, alist.length() -1);
+            // System.out.println((alist));
+            alist += ")";
+            // System.out.println((alist));
+            mqb.append("  inner join listing_amenities la on la.amenities_name in " + alist + " ");
+
+        }
+        mqb.append(" having 1 ");
+        // if there were lat lon then we need to filter by distance
+        if(longitude != null && latitude != null){
+            mqb.append("  and distance < " + distance);
+        }
+
+        if(street_num != null && street_num.toString() != "") mqb.append(" and street_num='" + street_num + "'");
+        if(street_name != null && street_name != "") mqb.append(" and street_name='" + street_name+ "'");
+        if(city!=null && city != "") mqb.append(" and city='" + city+ "'");
+        if(country!=null && country!= "") mqb.append(" and country='" + country+ "'");
+        if(postal_code_area!=null && postal_code_area!= "") mqb.append(" and postal_code_area='" + postal_code_area+ "'");
+        if(postal_code_num!= null && postal_code_num!= "") mqb.append(" and postal_code_num='" + postal_code_num+ "'");
+        if(max_cost != null && min_cost != null) {
+            mqb.append(" AND price >= " +  min_cost +" AND "+" price <= " + max_cost);
+        }
+        
+        System.out.println(checkin_date);
+        if(checkin_date != null && checkout_date != null 
+            && checkin_date != "" && checkout_date != ""){
+            mqb.append(" AND date>='" + checkin_date +"'");
+            mqb.append(" AND date<='" + checkout_date +"'");
+
+        }
+        if(price_low_to_high) {
+            mqb.append(" ORDER BY av.price ASC");
+        } else {
+            mqb.append(" ORDER BY av.price DESC");
+        }
+
+        // String q = "select distinct id from (" + mqb.toString() + ") as t";
+        System.out.println(mqb.toString());
+
+        List<Object[]> custom_result = listingRepo.findByListingQuery(mqb.toString());
+        if(custom_result.isEmpty()){
+            redirectAttr.addFlashAttribute("message","No listings found");
+            // redirectAttr.addFlashAttribute("amenities",  amenityRepo.findAll());
+
+            return "redirect:searchListings";
+        }
+
+        Iterator<Object[]> result_set = custom_result.iterator();
+        while(result_set.hasNext()){
+            Object res = result_set.next();
+            System.out.println(res);
+        }
+        
+
+        
+
+        // if there were coord show distance////
+        custom_result.iterator();
+        // listingRepo.findByForListingQuery(mqb.toString());
+        // List<Object[]> res = listingRepo.findForQuery(mqb.toString());
+        // List<Integer> listings = listingRepo.findByCustomQuery(q, "");
+        // List<Object[]> listings = listingRepo.findByForListingQuery(mqb.toString());
+
+        // List<Object[]> listings = listingRepo.findByForListingQuery(q);
+        // System.out.println(q);
+        // List<Object[]> lints = listingRepo.findForQuery(mqb.toString());
+        // List<Listing> ls = listingRepo.findAll();
+        // model.addAttribute("listings", listings);
+        // sent all available amenities
+        // model.addAttribute("ls", ls);
+        // redirectAttr.addFlashAttribute("amenities",  amenityRepo.findAll());
+// ;        model.addAttribute("amenities", amenityRepo.findAll());
+        return "redirect:searchListings";
+
+        //    	System.out.println(lq);
+        //  System.out.println(result.getAllErrors());
  //    		System.out.println(lq.getStreet_num());
  //    		  boolean long_lat = false;
 
-        System.out.println(lq.getAmenitiesList());
+//         System.out.println(lq.getAmenitiesList());
         
-        // Iterator<String> res = iterator;
-        // Iterator<String> it = lq.getAmenitiesList().iterator();
-        // while(it.hasNext()){
-        //     System.out.println(it.next());
-        // }
-        //  System.out.println(lq.getCheckin_date());
-         System.out.println();
-             StringBuilder qfilter = new StringBuilder();
-             boolean filtered = false;
-             if(lq.getCheckin_date() != null && lq.getCheckout_date() != null) {
-                 filtered = true;
-                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                 String checkin = format.format(lq.getCheckin_date());
-                 String checkout = format.format(lq.getCheckout_date());
-                 
-                 LocalDate cin = new LocalDate(checkin);
-                 LocalDate cout = new LocalDate(checkout);
-                 LocalDate curr = cin;
-                 while(curr.isBefore(cout)) {
-                     System.out.println(curr);
-                     curr = curr.plusDays(1);
-                 }
-                 System.out.println(cin);
-                 System.out.println(cout);
- //    			qfilter.append( date+ )
-             }
-             System.out.println(lq.getMin_cost());
+//         // Iterator<String> res = iterator;
+//         // Iterator<String> it = lq.getAmenitiesList().iterator();
+//         // while(it.hasNext()){
+//         //     System.out.println(it.next());
+//         // }
+//         //  System.out.println(lq.getCheckin_date());
+//          System.out.println();
+//              StringBuilder qfilter = new StringBuilder();
+//              boolean filtered = false;
+//              if(lq.getCheckin_date() != null && lq.getCheckout_date() != null) {
+//                  filtered = true;
+//                  SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+//                  String checkin = format.format(lq.getCheckin_date());
+//                  String checkout = format.format(lq.getCheckout_date());
+//                  // get dates
+//                  LocalDate cin = new LocalDate(checkin);
+//                  LocalDate cout = new LocalDate(checkout);
+//                  LocalDate curr = cin;
+//                  while(curr.isBefore(cout)) {
+//                      System.out.println(curr);
+//                      curr = curr.plusDays(1);
+//                  }
+//                  System.out.println(cin);
+//                  System.out.println(cout);
+//  //    			qfilter.append( date+ )
+//              }
+//              System.out.println(lq.getMin_cost());
              
-             if(lq.getMax_cost() != 0.0) {
-                 filtered = true;
-                 qfilter.append(" AND price >= " +  lq.getMin_cost() +" AND "+" price <= " + lq.getMax_cost());
- //    			qfilter.append(" AND");
-             }
+//              if(lq.getMax_cost() != 0.0) {
+//                  filtered = true;
+//                  qfilter.append(" AND price >= " +  lq.getMin_cost() +" AND "+" price <= " + lq.getMax_cost());
+//  //    			qfilter.append(" AND");
+//              }
              
-             if(lq.isPrice_low_to_high()) {
-                 filtered = true;
-                 qfilter.append(" ORDER BY price ASC");
-             } else {
-                 qfilter.append(" ORDER BY price DESC");
-             }
- //    		
- //    		qfilter.append("AND 1");
+//              if(lq.isPrice_low_to_high()) {
+//                  filtered = true;
+//                  qfilter.append(" ORDER BY price ASC");
+//              } else {
+//                  qfilter.append(" ORDER BY price DESC");
+//              }
+//  //    		
+//  //    		qfilter.append("AND 1");
  
-               if(lq.getLatitude() != 0.0 && lq.getLongitude() != 0.0) {
-                   StringBuilder mqb = new StringBuilder();
+//                if(lq.getLatitude() != 0.0 && lq.getLongitude() != 0.0) {
+//                    StringBuilder mqb = new StringBuilder();
                    
-                   mqb.append("SELECT a.*,");
-                   if(filtered) {
-                       mqb.append("av.*,");
-                   }
-                   mqb.append("( 3959 * acos( cos( radians(" + lq.getLatitude() + ") ) "
-                           + " * cos( radians( latitude ) ) "
-                           + " * cos( radians( longitude ) "
-                           + " - radians(" + lq.getLongitude() + ") ) "
-                           + " + sin( radians(" + lq.getLatitude() +") ) "
-                           + " * sin( radians( latitude ) ) ) ) "
-                           + " AS distance ");
-                   mqb.append(" FROM Listing a ");
+//                    mqb.append("SELECT a.*,");
+//                    if(filtered) {
+//                        mqb.append("av.*,");
+//                    }
+//                    mqb.append("( 3959 * acos( cos( radians(" + lq.getLatitude() + ") ) "
+//                            + " * cos( radians( latitude ) ) "
+//                            + " * cos( radians( longitude ) "
+//                            + " - radians(" + lq.getLongitude() + ") ) "
+//                            + " + sin( radians(" + lq.getLatitude() +") ) "
+//                            + " * sin( radians( latitude ) ) ) ) "
+//                            + " AS distance ");
+//                    mqb.append(" FROM Listing a ");
                            
-                 if(filtered) {
+//                  if(filtered) {
 
-                     mqb.append(" inner join availability av on av.listing_id=a.id");
-                 }
+//                      mqb.append(" inner join availability av on av.listing_id=a.id");
+//                  }
          
-                           mqb.append(" HAVING distance < " + lq.getDistance());
+//                            mqb.append(" HAVING distance < " + lq.getDistance());
                    
                    
- //    			  System.out.println(lq.getDistance());
- //    			  System.out.println(lq.getLatitude());
- //    			  List<Listing> listings = listingRepo.findByDistance(lq.getDistance(), lq.getLatitude(), lq.getLongitude());
-                   System.out.println(mqb.toString() + qfilter.toString());
-                   List<Listing> listings = listingRepo.findByCustomQuery(mqb.toString(), qfilter.toString());
+//  //    			  System.out.println(lq.getDistance());
+//  //    			  System.out.println(lq.getLatitude());
+//  //    			  List<Listing> listings = listingRepo.findByDistance(lq.getDistance(), lq.getLatitude(), lq.getLongitude());
+//                    System.out.println(mqb.toString() + qfilter.toString());
+//                    List<Listing> listings = listingRepo.findByCustomQuery(mqb.toString(), qfilter.toString());
                    
-                   model.addAttribute("listings", listings);
-                   model.addAttribute("num", listings.size());
+//                    model.addAttribute("listings", listings);
+//                    model.addAttribute("num", listings.size());
            
-                   Iterable<Amenity> res = amenityRepo.findAll();
-                   System.out.println(res.iterator().next());
-                  model.addAttribute("amenities", res);
-                 return "query_listings";
+//                    Iterable<Amenity> res = amenityRepo.findAll();
+//                    System.out.println(res.iterator().next());
+//                   model.addAttribute("amenities", res);
+//                  return "query_listings";
                    
-               } 
+//                } 
  //    		  
  //    		  if(lq.getCity() != null) {
  //    		  
@@ -231,10 +368,10 @@ public class QueryController {
  //            model.addAttribute("listings", listings);
  //            model.addAttribute("num", listings.size());
    
-         Iterable<Amenity> res = amenityRepo.findAll();
-         System.out.println(res.iterator().next());
-        model.addAttribute("amenities", res);
-         return "query_listings";
+        //  Iterable<Amenity> res = amenityRepo.findAll();
+        //  System.out.println(res.iterator().next());
+        // model.addAttribute("amenities", res);
+        //  return "query_listings";
      }
      
 }

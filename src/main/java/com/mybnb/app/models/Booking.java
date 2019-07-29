@@ -25,7 +25,7 @@ public class Booking {
   @GeneratedValue(strategy=GenerationType.IDENTITY)
   private int id;
   
-  private enum Status {Booked, Cancelled;}
+  public enum Status {Booked, Cancelled;}
   
   @Enumerated(EnumType.STRING)
   private Status status;
