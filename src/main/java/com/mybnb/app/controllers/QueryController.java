@@ -6,10 +6,14 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.text.SimpleDateFormat;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -175,7 +179,7 @@ public class QueryController {
 
         // String q = "select distinct id from (" + mqb.toString() + ") as t";
         System.out.println(mqb.toString());
-
+        redirectAttr.addFlashAttribute("query", mqb.toString());
         List<Object[]> custom_result = listingRepo.findByListingQuery(mqb.toString());
         if(custom_result.isEmpty()){
             redirectAttr.addFlashAttribute("message","No listings found");
@@ -187,14 +191,30 @@ public class QueryController {
         Iterator<Object[]> result_set = custom_result.iterator();
         while(result_set.hasNext()){
             Object res = result_set.next();
+            
             System.out.println(res);
+
         }
         
+        ArrayList<Integer> rids = new ArrayList<>();
+        // Set<Integer> uniqKeys = new TreeSet<Integer>();
+        // uniqKeys.addAll(Arrays.asList(numbers));
+        // System.out.println("uniqKeys: " + uniqKeys);
+        
+        for(Object[] r: custom_result){
+            System.out.println(r);
+            Integer num = ((Integer)r[0]);
+            System.out.println(((Integer)r[0]));
+            if(!rids.contains(num)) rids.add(num);
+        }
+        Iterable<Integer> iter = rids;
+        System.out.println(rids);
 
+        List<Listing> allListings = listingRepo.findAllById(iter);
         
 
         // if there were coord show distance////
-        custom_result.iterator();
+        // custom_result.iterator();
         // listingRepo.findByForListingQuery(mqb.toString());
         // List<Object[]> res = listingRepo.findForQuery(mqb.toString());
         // List<Integer> listings = listingRepo.findByCustomQuery(q, "");
@@ -207,7 +227,7 @@ public class QueryController {
         // model.addAttribute("listings", listings);
         // sent all available amenities
         // model.addAttribute("ls", ls);
-        // redirectAttr.addFlashAttribute("amenities",  amenityRepo.findAll());
+        redirectAttr.addFlashAttribute("listings",  allListings);
 // ;        model.addAttribute("amenities", amenityRepo.findAll());
         return "redirect:searchListings";
 

@@ -83,11 +83,11 @@ public class Listing {
 
 	
 	@OneToMany(cascade=CascadeType.ALL, 
-        fetch = FetchType.LAZY, 
+        fetch = FetchType.LAZY,
         mappedBy = "listing")
     private List<Availability> availabilities;
 	
-	@ManyToMany
+	@ManyToMany( fetch = FetchType.EAGER)
 	private List<Amenity> amenities;
 	
 	public Listing(){

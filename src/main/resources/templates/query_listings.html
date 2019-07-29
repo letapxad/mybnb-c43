@@ -42,7 +42,7 @@
 	<p><b><u>Filters</u></b></p>
 	<p>Date range</p>
 	<input type="date" name="checkin_date" placeholder="Checkin Date" value="1980-01-01">
-	<input type="date" name="checkout_date" placeholder="Checkout Date" value="2000-12-01"></br>
+	<input type="date" name="checkout_date" placeholder="Checkout Date" value="2025-12-01"></br>
 	
 	<p>Min cost</p>
 	<input type="text" name="min_cost" placeholder="min cost" value="15">
@@ -51,7 +51,7 @@
 	<input type="radio" name="price_low_to_high" value="true" checked="true">Price low to high
 	<input type="radio" name="price_low_to_high" value="false"> Price high to low<br></br>
 	<div th:each="amenity:${amenities}">
-		<input type="checkbox" name="amenitiesList" th:value="${amenity.name}" checked><span th:text="${amenity.name}"></span>
+		<input type="checkbox" name="amenitiesList" th:value="${amenity.name}"><span th:text="${amenity.name}"></span>
 	</div>
 	<button style="height:50px;width:300px">Search</button>
 </form>
@@ -61,8 +61,8 @@
 	
 </h2>
 
-<div th:each="listing:${listings}">
-<table border=1>
+<div >
+<table border=1 th:each="listing:${listings}">
 	<tr>
 		<td>
 		<h3 th:text="${listing.name} + '  ' + ${listing.id}"></h3>
@@ -81,7 +81,8 @@
 	</tr>
 
 </table>
-
 </div>
+<!-- <p th:text="${query}"></p> -->
+
 </body>
 </html>

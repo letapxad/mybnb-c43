@@ -302,11 +302,43 @@ public class ReportsController {
 //    }
     }
 
-    private class RenterResult{
+    protected class RenterRankResult{
         public Renter renter;
         public int rank;
         public String sdate;
         public String edate;
+
+    public Renter getRenter() {
+      return renter;
+    }
+
+    public void setRenter(Renter renter) {
+      this.renter = renter;
+    }
+
+    public int getRank() {
+      return rank;
+    }
+
+    public void setRank(int rank) {
+      this.rank = rank;
+    }
+
+    public String getSdate() {
+      return sdate;
+    }
+
+    public void setSdate(String sdate) {
+      this.sdate = sdate;
+    }
+
+    public String getEdate() {
+      return edate;
+    }
+
+    public void setEdate(String edate) {
+      this.edate = edate;
+    }
     }
 
     @PostMapping("renterBookingRank")
@@ -318,17 +350,21 @@ public class ReportsController {
       @RequestParam(value="city", required=false) String city){
         System.out.println(city);
         System.out.println(start_date);
-        // ArrayList<RenterResult> rr = new ArrayList<RenterResult>();
+        ArrayList<RenterRankResult> rrr = new ArrayList<RenterRankResult>();
         Iterable<Renter> renters = null;
         List<Integer> ranks = new ArrayList<Integer>();
         if(city==null || city.equals("")){
           List<Object[]> result = bookingRepo.rankRentersByBookingCount(start_date, end_date);
           List<Integer> renter_ids = new ArrayList<Integer>();
           for(Object[] cancels: result){
+            RenterRankResult rr = new RenterRankResult();     
             Integer renter_id = (Integer)cancels[0];
+            rr.setRenter(renterRepo.findByRenterId(renter_id));
             renter_ids.add(renter_id);
             Integer count =  (Integer.parseInt(cancels[1].toString()));
             ranks.add(count);
+            rr.setRank(count);
+            rrr.add(rr);
           }
 
           System.out.println(renter_ids);
@@ -353,7 +389,7 @@ public class ReportsController {
           // List<Renter> rlist = IterableUtils.toList(renters);    
           redirAttrs.addFlashAttribute("sdate", start_date);
           redirAttrs.addFlashAttribute("edate", end_date);
-
+          redirAttrs.addFlashAttribute("rrr", rrr);
           redirAttrs.addFlashAttribute("rank", ranks);
           redirAttrs.addFlashAttribute("rentersrank", renters);
 

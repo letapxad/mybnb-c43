@@ -85,23 +85,16 @@
 			<p><b><i>Filter by city (at least two bookings in the range)</i></b></p>
 			<input type="text" name="city"  placeholder="Toronto">
 			<button >Rank renters by bookings</button>
-			<!-- <div th:if="${renters}" style="border: 2px solid black; margin-top: 4px"> -->
-			<table border=1 >
-					<!-- <tr th:if="${rentersrank}" th:each="index:${#numbers.sequence( 0, #arrays.length(rentersrank)-1)}">
-					    <td th:text="${rentersrank[index]}">List1Elm1</td>
-					    <td th:text="${ranks[index]}">List2Elm1</td>
-					</tr> -->
-				<tr th:if="${rentersrank}" th:each="r:${rentersrank}">
-					<td><p th:text="${r.id}"></p></td>
-					<td><p th:text="${r.first_name}"></p></td>
-					<td><p th:text="${r.last_name}"></p></td>
-					<!-- <td><p th:text="${r.last_name}"></p></td> -->
-					<!-- <td><p th:text="${renter.numBookings()"></p></td> -->
-				</tr>
-	
-			</table>
-		</div>
+		<!-- </div> -->
 		</form>
+		<p th:if="${rrr}" th:text="'for dates : ' + ${sdate} + ' to ' + ${edate} "><b></b></p>
+		<div>
+			<div th:if="${rrr}">
+				<div th:each="rr:${rrr}">
+					<p th:text="${rr.renter.id} + ') ' + ${rr.renter.first_name} + ' ' + ${rr.rank}"><span><b>RANK: </b></span><span th:text="${rr.rank}"></span></p>
+				</div>
+			</div>
+		</div>
 		
 	</li>
 	<li>
