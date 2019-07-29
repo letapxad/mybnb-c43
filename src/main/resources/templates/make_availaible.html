@@ -17,10 +17,24 @@
 	<button>Make Available</button>
 </form>
 
+<p th:text="${message}"></p>
+
 <p>Price suggestion for your listing per day:</p>
 <p th:text="${avg_price}"></p>
 
-<p th:text="${message}"></p>
+<h1>List of Available Listings</h1>
+  <table>
+  	 <tr>
+  	    <th>Listing ID</th>
+        <th>Price</th>
+        <th>Date Available</th>
+    </tr>
+    <tr th:each="a: ${availabilities}">
+	    <td th:text="${a.listing.id}" />
+	    <td th:text="${a.price}" />
+	    <td th:text="${a.date}" />
+	</tr>
+</table>
  
 </body>
 </html>

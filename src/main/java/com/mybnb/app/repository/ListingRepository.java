@@ -60,7 +60,7 @@ public interface ListingRepository extends JpaRepository<Listing,Integer>, Query
 	@Query(value="SELECT s.*,( 3959 * acos( cos( radians(?2) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?3) ) + sin( radians(?2) ) * sin( radians( latitude ) ) ) ) AS distance FROM Listing s HAVING distance  < ?1 ORDER BY distance",nativeQuery=true)
 	List<Listing> findByDistance(int distance, double lat, double lon);
 
-	
+
 	
 	
 	@Query(value="SELECT s.* from Listing s where "
@@ -98,5 +98,9 @@ public interface ListingRepository extends JpaRepository<Listing,Integer>, Query
 	List<Object[]> findForQuery(String q);
 
 
+	@Modifying
+    @Query("update Listing l set l.active = 1 where l.host = ?1")
+    @Transactional
+  void activateAllListing(Host host);
 	
 }

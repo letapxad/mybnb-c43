@@ -3,6 +3,7 @@ package com.mybnb.app.models;
 import java.sql.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.GeneratedValue;
@@ -30,10 +31,13 @@ public class Booking {
   @Enumerated(EnumType.STRING)
   private Status status;
   
+  @Column(nullable = false)
   private Date start_date;
   
+  @Column(nullable = false)
   private Date end_date;
   
+  @Column(nullable = false)
   private double cost;
   
   private String cancelled_by;
@@ -42,14 +46,26 @@ public class Booking {
   @JoinColumn(name = "renter_id")
   private Renter renter;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "listing_id")
   private Listing listing;
-
-  @ManyToOne
-  @JoinColumn(name = "host_id")
+  
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name="host_id")
   private Host host;
-
+  
+  @OneToOne(mappedBy = "booking",
+      cascade = CascadeType.REMOVE, orphanRemoval = true)
+  private RenterCommentHost rch;
+  
+  @OneToOne(mappedBy = "booking",
+      cascade = CascadeType.REMOVE, orphanRemoval = true)
+  private RenterCommentListing rcl;
+  
+  @OneToOne(mappedBy = "booking",
+      cascade = CascadeType.REMOVE, orphanRemoval = true)
+  private HostCommentRenter hcr;
+  
   public Host getHost() {
     return host;
   }

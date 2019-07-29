@@ -40,12 +40,17 @@ public interface BookingRepository extends CrudRepository<Booking,Integer>, Book
     void cancelBooking(int booking_id);
     
     @Modifying
-    @Query("update Booking b set b.cancelled_by = 'Renter' where b.id = ?1")
+    @Query("update Booking b set b.cancelled_by = 'RENTER' where b.id = ?1")
     @Transactional
     void setCancelRenter(int booking_id);
     
     @Modifying
-    @Query("update Booking b set b.cancelled_by = 'Host' where b.id = ?1")
+    @Query("update Booking b set b.cancelled_by = 'RENTER' where b.renter = ?1")
+    @Transactional
+    void setCancelRenterAll(Renter renter);
+    
+    @Modifying
+    @Query("update Booking b set b.cancelled_by = 'HOST' where b.id = ?1")
     @Transactional
     void setCancelHost(int booking_id);
     

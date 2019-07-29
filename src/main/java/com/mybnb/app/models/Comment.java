@@ -3,6 +3,7 @@ package com.mybnb.app.models;
 
 
 import java.util.Date;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,16 +23,18 @@ public class Comment {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int id;
   
+    @Column(length = 10000)
     private String text;
- 
+    
+    @Column(nullable = false)
 	private java.util.Date addedOn;
 	
 	private float rating;
 	
- 	//@Id
- 	@OneToOne
- 	@JoinColumn(name="booking_id")
- 	private Booking booking;
+ 	
+ 	//@OneToOne
+ 	//@JoinColumn(name="booking_id")
+ 	//private Booking booking;
  	
  	//@ManyToOne
     //@JoinColumn(name="host_id")

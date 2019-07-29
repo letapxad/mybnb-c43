@@ -23,6 +23,11 @@ public interface RenterRepository extends CrudRepository<Renter, Integer>{
   void deactivateRenter(int SIN);
   
   @Modifying
+  @Query("update Renter r set r.active = 1 where r.SIN = ?1")
+  @Transactional
+  void activateRenter(int SIN);
+  
+  @Modifying
   @Query("delete from Renter r where r.SIN = ?1")
   @Transactional
   void deleteRenter(int SIN);

@@ -1,7 +1,9 @@
 package com.mybnb.app.models;
 
 import java.sql.Date;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
@@ -12,11 +14,13 @@ import javax.persistence.ManyToOne;
 public class Availability {
   
   @Id
+  @Column(nullable = false)
   private Date date;
+  @Column(nullable = false)
   private double price;
   
   @Id
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name="listing_id")
   private Listing listing;
   

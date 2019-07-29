@@ -7,6 +7,11 @@
 <body>
 <h1>List of Available Listings</h1>
   <table>
+  	 <tr>
+  	    <th>Listing ID</th>
+        <th>Price</th>
+        <th>Date Available</th>
+    </tr>
     <tr th:each="listing: ${listings}">
 	    <td th:text="${listing.listing.id}" />
 	    <td th:text="${listing.price}" />

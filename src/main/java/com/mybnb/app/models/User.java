@@ -26,11 +26,14 @@ public class User {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	
+	@Column(nullable = false)
 	private String first_name;
+	@Column(nullable = false)
 	private String last_name;
 	private String occupation;
+	@Column(nullable = false)
 	private Date DOB;
-	@Column(columnDefinition = "TINYINT")
+	@Column(columnDefinition = "TINYINT", nullable = false)
 	private Boolean active;
 	
 	public int getSIN() {

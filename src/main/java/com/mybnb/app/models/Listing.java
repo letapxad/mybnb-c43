@@ -40,6 +40,12 @@ public class Listing {
 	@JoinColumn(name="host_id")
 	private Host host;
 	
+	@OneToMany(cascade=CascadeType.REMOVE, 
+        fetch = FetchType.LAZY, 
+        mappedBy = "listing")
+    private List<Booking> bookings;
+	
+	 @Column(nullable = false)
 	private double longitude;
 	
 	public List<Availability> getAvailabilities() {
@@ -50,25 +56,35 @@ public class Listing {
   }
   
   	
-  
+  @Column(nullable = false)
    private double latitude;
+  @Column(nullable = false)
 	private String type;
+  @Column(nullable = false)
 	private int street_num;
+  @Column(nullable = false)
 	private String street_name;
+  @Column(nullable = false)
 	private String unit;
+  @Column(nullable = false)
 	private String city;
-	@Column(length = 3)
+	@Column(length = 3, nullable = false)
 	private String postal_code_area;
-	@Column(length = 3)
+	@Column(length = 3, nullable = false)
 	private String postal_code_num;
+	 @Column(nullable = false)
 	private String country;
+	 @Column(nullable = false)
 	private Date listed_on;
-	@Column(columnDefinition = "TINYINT")
+	@Column(columnDefinition = "TINYINT", nullable=false)
 	private boolean active;
+	 @Column(nullable = false)
 	private String name;
 
 	
-	@OneToMany(mappedBy="listing")
+	@OneToMany(cascade=CascadeType.ALL, 
+        fetch = FetchType.LAZY, 
+        mappedBy = "listing")
     private List<Availability> availabilities;
 	
 	@ManyToMany
