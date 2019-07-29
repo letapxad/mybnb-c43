@@ -18,6 +18,8 @@
 </form>
 
 <p th:text="${message}"></p>
+<h3>Price suggestion for your listing per day (HOST TOOLKIT): </h3>
+<p th:text="'$' +${avg_price}"></p>
 
 <h1>List of Available Listings</h1>
   <table>

@@ -468,6 +468,8 @@ public class MainController {
     
     @GetMapping("/updatePricing")
     public String updatePricingForm(Model model) {
+      double avg_price = availabilityRepo.getAvgPrice();
+      model.addAttribute("avg_price", avg_price);
       Iterable<Availability> availabilities = availabilityRepo.findAll();
       model.addAttribute("availabilities", availabilities);
       return "update_pricing";

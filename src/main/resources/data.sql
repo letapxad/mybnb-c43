@@ -83,15 +83,38 @@ INSERT INTO availability (date,price,listing_id) VALUES ("2020-11-11",768,4),("2
 		
  insert into amenity (name)
  	values
- 		("Closet"),
- 		("Drawers"),
- 		("TV"), 
- 		("Heat"),
- 		("Air_Conditioning"), 
+		("Towel"),
+		("Bed_sheets"),
+		("Soap"),
+
+		("Toilet_paper"),
+		("Pillows"),
+		("Wifi"),
+
+		("Shampoo"),
+
+		("Closet"),
+		("Drawers"),
+		("TV"),
+
+		("Heat"),
+		("Air_Conditioning"),
 		("Breakfast"),
-		("Wifi");
 
+		("Coffee"),
+		("Tea"),
+		("Desk"),
+		("Fireplace"),
+		("Iron"),
+		("Hair_dryer"),
+		("Private_entrance"),
 
+		("Smoke_detector"),
+		("Carbon_monoxide_detector"),
+		("First_aid_kit"),
+
+		("Fire_extinguisher"),
+		("Lock_on_bedroom_door");
 
 INSERT INTO listing_amenities (listings_id,amenities_name) VALUES (29,"Closet"),(100,"Closet"),(50,"Closet"),(25,"Closet"),(29,"Drawers"),(73,"Drawers"),(7,"Drawers"),(99,"Drawers"),(5,"TV"),(18,"TV");
 INSERT INTO listing_amenities (listings_id,amenities_name) VALUES (94,"TV"),(31,"TV"),(48,"Heat"),(68,"Heat"),(47,"Heat"),(37,"Heat"),(39,"Air_Conditioning"),(7,"Air_Conditioning"),(67,"Air_Conditioning"),(96,"Air_Conditioning");
@@ -210,4 +233,4 @@ insert into renter_comment_host (added_on , rating, text, booking_id)
 --alter table renter_comment_host add constraint fk_rch foreign key (booking_id) references booking (id) on delete cascade;
 --alter table host_comment_renter drop foreign key fk_comment3;
 --alter table host_comment_renter add constraint fk_hcr foreign key (booking_id) references booking (id) on delete cascade;
- 
+ delete from availability where date<'2019-07-29';

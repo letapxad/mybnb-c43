@@ -16,15 +16,10 @@ public class Renter extends User {
     @Column(nullable = false)
 	private Date exp_date;
 	
-<<<<<<< HEAD
-	@OneToMany(mappedBy = "renter", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	private List<Booking> bookings;
-=======
 	@OneToMany(cascade=CascadeType.REMOVE, 
         fetch = FetchType.LAZY, 
         mappedBy = "renter")
     private List<Booking> bookings;
->>>>>>> 3cb22639da86164d827311d88c675265a7066d08
 	
 //	 @OneToMany
 //	 private List<RenterCommentListing> comments;
@@ -59,7 +54,7 @@ public class Renter extends User {
 	}
 
 
-	
+
 
 
 }

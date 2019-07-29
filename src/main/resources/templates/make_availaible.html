@@ -11,7 +11,7 @@
 
 <form action="/maAvailable" method="POST">
 	<input type="text" name="host_id" placeholder="Your ID">
-	<input type="text" name="new_date" placeholder="New Date">
+	<input type="date" name="new_date" placeholder="New Date">
 	<input type="text" name="price" placeholder="Price">
 	<input type="text" name="listing_id" placeholder="Listing ID">
 	<button>Make Available</button>
@@ -19,8 +19,8 @@
 
 <p th:text="${message}"></p>
 
-<p>Price suggestion for your listing per day:</p>
-<p th:text="${avg_price}"></p>
+<h3>Price suggestion for your listing per day (HOST TOOLKIT):</h3>
+<p th:text="'$' + ${avg_price}"></p>
 
 <h1>List of Available Listings</h1>
   <table>
