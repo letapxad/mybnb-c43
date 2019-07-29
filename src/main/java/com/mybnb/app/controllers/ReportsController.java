@@ -164,54 +164,61 @@ public class ReportsController {
 //    }
     }
 
+    protected class HostRankResult {
+      private Host host;
+      private int rank;
 
-    @PostMapping("hostReport")
+    public Host getHost() {
+      return host;
+    }
+
+    public void setHost(Host host) {
+      this.host = host;
+    }
+
+    public int getRank() {
+      return rank;
+    }
+
+    public void setRank(int rank) {
+      this.rank = rank;
+    }
+    }
+
+    @PostMapping("hostRanksReport")
     public String hostReport(
       Model model, RedirectAttributes redirAttrs,
-      @RequestParam(value="start_date", required=true) String start_date,
-      @RequestParam(value="end_date", required=true) String end_date,
+      @RequestParam(value="country", required=true) String country,
       @RequestParam(value="city", required=false) String city){
-        System.out.println(city);
-        System.out.println(start_date);
-        Iterable<Renter> renters = null;
-        List<Integer> ranks = new ArrayList<Integer>();
-        if(city==null || city.equals("")){
-          List<Object[]> result = bookingRepo.rankRentersByBookingCount(start_date, end_date);
-          List<Integer> renter_ids = new ArrayList<Integer>();
-          for(Object[] cancels: result){
-            Integer renter_id = (Integer)cancels[0];
-            renter_ids.add(renter_id);
-            Integer count =  (Integer.parseInt(cancels[1].toString()));
-            ranks.add(count);
-          }
 
-          System.out.println(renter_ids);
-          renters = renterRepo.findAllById(renter_ids);
 
+        if(country==null || country.equals("")){
+          
+          return "redirect:reports";
+        } 
+
+        List<HostRankResult> hrr = new ArrayList<HostRankResult>();
+        List<Object[]> rs = null;
+
+        if (city==null || city.equals("")){
+          rs = listingRepo.findHostRankforListingsByCountry(country);
+          
         } else {
-
-        List<Object[]> result = bookingRepo.rankRentersByBookingCountInCity(start_date, end_date, city);
-        
-        redirAttrs.addFlashAttribute("city", city);
-        List<Integer> renter_ids = new ArrayList<Integer>();
-          for(Object[] cancels: result){
-            Integer renter_id = (Integer)cancels[0];
-            renter_ids.add(renter_id);
-            Integer count =  (Integer.parseInt(cancels[1].toString()));
-            ranks.add(count);
-          }
-          System.out.println(renter_ids);
-          renters = renterRepo.findAllById(renter_ids);
+          rs = listingRepo.findHostRankforListingsByCountryAndCity(country, city);
         }
-         
-          ArrayList<Renter> rlist = (ArrayList<Renter>) IterableUtils.toList(renters);
-          System.out.println(rlist);
-          // Arrays.
-          redirAttrs.addFlashAttribute("sdate", start_date);
-          redirAttrs.addFlashAttribute("edate", end_date);
+        for(Object[] r: rs){
+          HostRankResult hr = new HostRankResult();
+          Integer host_id = (Integer)r[0];
+          hr.setHost(hostRepo.findByHostId(host_id));
+          Integer rank =  (Integer.parseInt(r[1].toString()));
+          hr.setRank(rank);
+          hrr.add(hr);
+        }
+          // redirAttrs.addFlashAttribute("sdate", start_date);
+          // redirAttrs.addFlashAttribute("edate", end_date);
 
-          redirAttrs.addFlashAttribute("rank", ranks);
-          redirAttrs.addFlashAttribute("rentersrank", rlist);
+          // redirAttrs.addFlashAttribute("rank", ranks);
+          redirAttrs.addFlashAttribute("hrr", hrr);
 
       return "redirect:reports";
     }
@@ -219,7 +226,7 @@ public class ReportsController {
 
     // select renter_id, count(*) as cancel_count from (select distinct renter_id,id  from booking WHERE cancelled_by="RENTER" start_date>='2020-01-01' and end_date<='2020-12-31') as t group by renter_id order by cancel_count desc;
 //  select host_id, count(*) as cancel_count,h.* from (select distinct host_id,id  from booking WHERE cancelled_by="HOST" and start_date>='2020-01-01' and end_date<='2020-12-31') as t inner join host h on h.id=host_id group by host_id order by cancel_count desc;    
-@PostMapping("cancelReport")
+    @PostMapping("cancelReport")
     public String getCancelReport(
       Model model, RedirectAttributes redirAttrs,
       @RequestParam(value="year", required=false) Number year){

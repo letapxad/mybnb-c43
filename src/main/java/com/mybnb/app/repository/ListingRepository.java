@@ -1,7 +1,9 @@
 package com.mybnb.app.repository;
 
 import java.sql.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -102,5 +104,12 @@ public interface ListingRepository extends JpaRepository<Listing,Integer>, Query
     @Query("update Listing l set l.active = 1 where l.host = ?1")
     @Transactional
   void activateAllListing(Host host);
+
+
+  @Query(value="select host_id,count(id) as count from listing where country= ?1 group by host_id order by count desc;", nativeQuery = true)
+  List<Object[]> findHostRankforListingsByCountry(String country);
+
+  @Query(value="select host_id, count(id) as count  from listing where country= ?1 and city= ?2 group by host_id order by count desc;", nativeQuery = true)
+  List<Object[]> findHostRankforListingsByCountryAndCity(String country, String city);
 	
 }

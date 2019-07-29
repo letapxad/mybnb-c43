@@ -62,14 +62,26 @@
 		</form>
 	</li>
 	<li>
-		<h3>Rank Hosts by total number listings per</h3>
-		<form action="/hostRankReport">
+		<h3><u>Rank Hosts by total number listings per</u></h3>
+		<form action="/hostRanksReport" method="POST">
 			<p><b><i>Country</i></b></p>
-			<input type="text" name="city" placeholder="city"><br>
+			<input type="text" name="country" placeholder="country"><br>
 			<p><b><i>Refine by City</i></b></p>
 			<input type="text" name="city" placeholder="city"><br><br>
 			<button >Rank Hosts</button>
 		</form>
+		<div>
+			<table style="border: 2px solid black; margin-top: 4px">
+				<tr th:each="hr:${hrr}">
+					<b></b><td th:text="${hr.host.id}"></td>
+					<b></b><td th:text="${hr.host.first_name}"></td>
+					<b></b><td th:text="${hr.host.last_name}"></td>
+					<b></b><td th:text="${hr.rank}"></td>
+
+
+				</tr>
+			</table>
+		</div>
 		
 	</li>
 	<li>
@@ -108,24 +120,22 @@
 		<h3 th:if="${renters}">Renter and Host Cancellations</h3>
 
 		<div >
-			<table border=1 th:each="renter:${renters}">
+			<table style="border: 2px solid black; margin-top: 4px">
 
 			
-			<tr>
+			<tr th:each="renter:${renters}">>
 				<td><span th:text="${renter.id}"></span></td>
 				<td><span th:text="${renter.first_name}"></span></td>
 				<td><span th:text="${renter.last_name}"></span></td>
 				<td><span th:text="${renter.getDistinctCancelledCount()}"></span></td>
-
-				
 			</tr>
 		</table>	
 
 		</div>
 
 		<div >
-			<table border=1 th:each="host:${hosts}">
-			<tr>
+			<table style="border: 2px solid black; margin-top: 4px" >
+			<tr th:each="host:${hosts}">
 				<td><span th:text="${host.id}"></span></td>
 				<td><span th:text="${host.first_name}"></span></td>
 				<td><span th:text="${host.last_name}"></span></td>
@@ -135,6 +145,9 @@
 			</table>	
 
 		</div>
+	</li>
+	<li>
+		<h3><b><u>Noun Phrases from Renter Comments on Listings</u></b></h3>
 	</li>
 </ol>
 </body>
