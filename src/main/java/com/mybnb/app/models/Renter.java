@@ -11,12 +11,15 @@ import javax.persistence.OneToMany;
 
 @Entity
 public class Renter extends User {
-	
+    @Column(nullable = false)
 	private Long card_num;
+    @Column(nullable = false)
 	private Date exp_date;
 	
-	@OneToMany(mappedBy = "renter", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Booking> bookings;
+	@OneToMany(cascade=CascadeType.REMOVE, 
+        fetch = FetchType.LAZY, 
+        mappedBy = "renter")
+    private List<Booking> bookings;
 	
 //	 @OneToMany
 //	 private List<RenterCommentListing> comments;

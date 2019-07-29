@@ -81,5 +81,10 @@ public interface ListingRepository extends JpaRepository<Listing,Integer>, Query
 //	List<Listing> findByAvailabilty(Date checkin, Date checkout);
 	@Query("SELECT l.host from Listing l where l.id = ?1")
 	Host getHost(int booking_listing_id);
+
+	@Modifying
+    @Query("update Listing l set l.active = 1 where l.host = ?1")
+    @Transactional
+  void activateAllListing(Host host);
 	
 }

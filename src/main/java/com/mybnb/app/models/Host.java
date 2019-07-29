@@ -20,12 +20,14 @@ public class Host extends User{
 	 * relationship this will be auto generated
 	 */
 	
-	@OneToMany(cascade=CascadeType.ALL, 
-			   fetch = FetchType.LAZY, 
-			   mappedBy = "host")
-	private List<Listing> listings;
-	
-	@OneToMany(mappedBy = "host")//, cascade = CascadeType.ALL)
+      @OneToMany(cascade=CascadeType.REMOVE, 
+          fetch = FetchType.LAZY, 
+          mappedBy = "host")
+    private List<Listing> listings;
+    
+    @OneToMany(cascade=CascadeType.REMOVE, 
+    fetch = FetchType.LAZY, 
+    mappedBy = "host")
     private List<Booking> bookings;
 
 	public List<Listing> getListings() {

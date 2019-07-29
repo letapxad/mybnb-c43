@@ -18,6 +18,20 @@
 </form>
 
 <p th:text="${message}"></p>
+
+<h1>List of Available Listings</h1>
+  <table>
+  	 <tr>
+  	    <th>Listing ID</th>
+        <th>Price</th>
+        <th>Date Available</th>
+    </tr>
+    <tr th:each="a: ${availabilities}">
+	    <td th:text="${a.listing.id}" />
+	    <td th:text="${a.price}" />
+	    <td th:text="${a.date}" />
+	</tr>
+</table>
  
 </body>
 </html>

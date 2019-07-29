@@ -206,16 +206,16 @@ public class MainController {
 	
 	@GetMapping("/deleteRenter")
 	public String deleteRenterForm(Model model) {
-	  Iterable<Renter> renter = renterRepo.findAll();
-      model.addAttribute("renter",renter);
+	  Iterable<Renter> renters = renterRepo.findAll();
+      model.addAttribute("renters",renters);
 	  return "delete_renter";
 	}
 	
 	@PostMapping("/delRenter")
 	public String deleteRenterForm(Model model, @RequestParam int SIN) {
 	  Renter renter = renterRepo.findBySIN(SIN);
-	  bookingRepo.cancelAllBooking(renter);
-	  renterRepo.deactivateRenter(SIN);
+	  //bookingRepo.cancelAllBooking(renter);
+	  renterRepo.deleteById(renter.getId());
 	  //bookingRepo.deleteBooking(renter);
 	  //renterCommentHostRepo.deleteComment(SIN);
 	  //hostCommentRenterRepo.deleteComment(SIN);
@@ -235,12 +235,12 @@ public class MainController {
     @PostMapping("/delHost")
     public String deleteHostForm(Model model, @RequestParam int SIN) {
       Host host = hostRepo.findBySIN(SIN);
-      listingRepo.deactivateAllListing(host);
-      hostRepo.deactivateHost(SIN);
+      //listingRepo.deactivateAllListing(host);
+      //hostRepo.deactivateHost(SIN);
       // hostRepo.deleteHost(SIN);
       hostRepo.deleteById(host.getId());
-      List<Listing> listings = host.getListings();
-      Iterator<Listing> res = listings.iterator();
+      //List<Listing> listings = host.getListings();
+      //Iterator<Listing> res = listings.iterator();
 
       // while(res.hasNext()){
       //   systout
@@ -258,13 +258,15 @@ public class MainController {
 //        model.addAttribute("host", host);
 //        //System.out.println(listing.getName());
       List<String> popular_amenities = amenityRepo.getPopularAmenity(new PageRequest(0,2));
-      //List<String> popular_amenities2 = amenityRepo.popularAmenity(new PageRequest(0,2));
       String popular_amenity1 = popular_amenities.get(0);
-      popular_amenity1 = popular_amenity1.substring(0, popular_amenity1.length()-2);
+      popular_amenity1 = popular_amenity1.substring(0, popular_amenity1.length()-3);
       String popular_amenity2 = popular_amenities.get(1);
-      popular_amenity2 = popular_amenity2.substring(0, popular_amenity2.length()-2);
+      popular_amenity2 = popular_amenity2.substring(0, popular_amenity2.length()-3);
       model.addAttribute("popular_amenity1", popular_amenity1);
       model.addAttribute("popular_amenity2", popular_amenity2);
+      
+      List<Listing> listings = listingRepo.findAll();
+      model.addAttribute("listings", listings);
       return "create_listing";
     }
     
@@ -281,10 +283,17 @@ public class MainController {
         @RequestParam int unit,
         @RequestParam String postal_code_area,
         @RequestParam String postal_code_num,
-        @RequestParam int host_id)
+        @RequestParam int host_id, RedirectAttributes ra)
         {
       java.util.Date listed_on = new java.util.Date();
+      Host host = hostRepo.findByHostId(host_id);
+      if (host.getActive() == false) {
+        ra.addFlashAttribute("message1", "you are a deactivated host");
+        return "redirect:createListing";
+      }
       listingRepo.insertListing(name, type, latitude, longitude, country, city, street_name, street_num, unit, postal_code_area, postal_code_num, listed_on, host_id);
+      //System.out.println(host.getActive() == false);
+      
       //listingRepo.save(listing);
       //double max_price = availabilityRepo.getMaxPrice();
       return "redirect:createListing";
@@ -292,13 +301,20 @@ public class MainController {
     
     @GetMapping("/deleteListing")
     public String deleteListingForm(Model model) {
+      List<Listing> listings = listingRepo.findAll();
+      model.addAttribute("listings", listings);
       return "delete_listing";
     }
     
     @PostMapping("/delListing")
-    public String deleteListingForm(Model model, @RequestParam int id) {
+    public String deleteListingForm(Model model, @RequestParam int listing_id, @RequestParam int host_id, RedirectAttributes ra) {
+      Host host = listingRepo.getHost(listing_id);
+      if (host.getId() != host_id) {
+        ra.addFlashAttribute("message", "You do not own this listing.");
+        return "redirect:deleteListing";
+      }
       //Host host = hostRepo.findBySIN(SIN);
-      listingRepo.deactivateListing(id);
+      listingRepo.deleteById(listing_id);
       //hostRepo.deactivateHost(SIN);
       return "redirect:deleteListing";
     }
@@ -312,7 +328,10 @@ public class MainController {
     
     @GetMapping("/createBooking")
     public String createBookingForm(Model model) {
-      //model.addAttribute("message", message);
+      List<Listing> listings = listingRepo.findAll();
+      model.addAttribute("listings", listings);
+      Iterable<Availability> availabilities = availabilityRepo.findAll();
+      model.addAttribute("availabilities", availabilities);
       return "create_booking";
     }
     
@@ -320,6 +339,15 @@ public class MainController {
     public String createBookingForm(Model model,@ModelAttribute("message") String message, @RequestParam int renter_id, @RequestParam int listing_id, @RequestParam Date start_date, @RequestParam Date end_date, RedirectAttributes ra) {
       List<Availability> availabilities = availabilityRepo.findByListingId(listing_id);
       Listing listing = listingRepo.findByListingId(listing_id);
+      Renter renter = renterRepo.findByRenterId(renter_id);
+      if (renter.getActive() == false) {
+        ra.addFlashAttribute("message", "You are a deactivated renter.");
+        return "redirect:createBooking";
+      }
+      if (listing.isActive() == false) {
+        ra.addFlashAttribute("message", "This listing is deactivated.");
+        return "redirect:createBooking";
+      }
       // generate a list of dates from start_date to (endate - 1)
       java.util.Date st_date = start_date;
       java.util.Date en_date = end_date;
@@ -334,16 +362,16 @@ public class MainController {
       double cost = 0;
       while (date.compareTo(en_date) <= 0) {
         available = false;
-        Availability av = availabilityRepo.getPrice(date, listing);
-        cost = cost + av.getPrice();
         for (Availability availability : availabilities) {
           //System.out.println(date);
           //System.out.println(availability.getDate());
           java.util.Date a_date = availability.getDate();
-          //System.out.println(date.compareTo(a_date) == 0);
+          System.out.println(date.compareTo(a_date) == 0);
           if (date.compareTo(a_date) == 0) {
             //System.out.println("hello");
             available = true;
+            Availability av = availabilityRepo.getPrice(date, listing);
+            cost = cost + av.getPrice();
             //System.out.println(available);
             break;
           }
@@ -438,6 +466,8 @@ public class MainController {
     
     @GetMapping("/updatePricing")
     public String updatePricingForm(Model model) {
+      Iterable<Availability> availabilities = availabilityRepo.findAll();
+      model.addAttribute("availabilities", availabilities);
       return "update_pricing";
     }
     
@@ -458,6 +488,8 @@ public class MainController {
     public String makeAvailableForm(Model model) {
       double avg_price = availabilityRepo.getAvgPrice();
       model.addAttribute("avg_price", avg_price);
+      Iterable<Availability> availabilities = availabilityRepo.findAll();
+      model.addAttribute("availabilities", availabilities);
       return "make_availaible";
     }
     
@@ -476,6 +508,8 @@ public class MainController {
     
     @GetMapping("/makeUnavailable")
     public String makeUnavailableForm(Model model) {
+      Iterable<Availability> availabilities = availabilityRepo.findAll();
+      model.addAttribute("availabilities", availabilities);
       return "make_unavailaible";
     }
     
@@ -561,6 +595,11 @@ public class MainController {
       return "redirect:renterCommentListing";
     }
     
+    @GetMapping("/hostCommentRenter")
+    public String hostCommentRenterForm(Model model) {
+      return "host_comment_renter";
+    }
+    
     
     @PostMapping("/hostCommentRenterPost")
     public String hostCommentRenterForm(Model model, 
@@ -589,6 +628,13 @@ public class MainController {
     
     @GetMapping("/addAmenity")
     public String addAmenityForm(Model model) {
+      List<String> popular_amenities = amenityRepo.getPopularAmenity(new PageRequest(0,2));
+      String popular_amenity1 = popular_amenities.get(0);
+      popular_amenity1 = popular_amenity1.substring(0, popular_amenity1.length()-3);
+      String popular_amenity2 = popular_amenities.get(1);
+      popular_amenity2 = popular_amenity2.substring(0, popular_amenity2.length()-3);
+      model.addAttribute("popular_amenity1", popular_amenity1);
+      model.addAttribute("popular_amenity2", popular_amenity2);
       return "add_amenity";
     }
     
@@ -608,6 +654,70 @@ public class MainController {
       return "redirect:addAmenity";
     }
     
+    @GetMapping("/deactivateHost")
+    public String deactivateHostForm(Model model) {
+      return "deactivate_host";
+    }
     
+    @PostMapping("/deacHost")
+    public String deactivateHostForm(Model model, 
+       @RequestParam int host_SIN, RedirectAttributes ra) {
+      //java.util.Date added_on = new java.util.Date();
+      Host host = hostRepo.findBySIN(host_SIN);
+      listingRepo.deactivateAllListing(host);
+      hostRepo.deactivateHost(host_SIN);
+      return "redirect:deactivateHost";
+    }
+    
+    @GetMapping("/activateHost")
+    public String activateHostForm(Model model) {
+      return "activate_host";
+    }
+    
+    @PostMapping("/acHost")
+    public String activateHostForm(Model model, 
+       @RequestParam int host_SIN, RedirectAttributes ra) {
+      //java.util.Date added_on = new java.util.Date();
+      Host host = hostRepo.findBySIN(host_SIN);
+      listingRepo.activateAllListing(host);
+      hostRepo.activateHost(host_SIN);
+      return "redirect:activateHost";
+    }
+    
+    @GetMapping("/deactivateRenter")
+    public String deactivateRenterForm(Model model) {
+      return "deactivate_renter";
+    }
+    
+    @PostMapping("/deacRenter")
+    public String deactivateRenterForm(Model model, 
+       @RequestParam int renter_SIN) {
+      Renter renter = renterRepo.findBySIN(renter_SIN);
+      bookingRepo.cancelAllBooking(renter);
+      bookingRepo.setCancelRenterAll(renter);
+      //java.util.Date added_on = new java.util.Date();
+      renterRepo.deactivateRenter(renter_SIN);
+      return "redirect:deactivateRenter";
+    }
+    
+    @GetMapping("/activateRenter")
+    public String activateRenterForm(Model model) {
+      return "activate_renter";
+    }
+    
+    @PostMapping("/acRenter")
+    public String activateRenterForm(Model model, 
+       @RequestParam int renter_SIN, RedirectAttributes ra) {
+      Renter renter = renterRepo.findBySIN(renter_SIN);
+      //bookingRepo.cancelAllBooking(renter);
+      //java.util.Date added_on = new java.util.Date();
+      renterRepo.activateRenter(renter_SIN);
+      return "redirect:activateRenter";
+    }
+    
+    @GetMapping("/operations")
+    public String allOperations(Model model) {
+      return "operations";
+    }
 }
 

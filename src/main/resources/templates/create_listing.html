@@ -25,9 +25,30 @@
 	<input type="text" name="active" value="1"  hidden>
 	<button>Create Listing</button>
 </form>
- <h2> Good Amenities to have: </h2>
- <p th:text="${popular_amenity1}"></p>
- <p th:text="${popular_amenity2}"></p>
+<p th:text="${message1}"></p>
  
+ <p th:text="${message}"></p>
+ 
+ <h1>Operations On Listings</h1>
+  <ul>
+    <li><a href="/updatePricing">Update Pricing of A listing</a></li>
+    <li><a href="/makeAvailable">Make a Listing Available</a></li>
+    <li><a href="/makeUnavailable">Make a Listing Unavailable</a></li>
+	<li><a href="/addAmenity">Add an Amenity to a Listing</a></li>
+  </ul>
+ 
+ <h1>List of listings</h1>
+  <table>
+  	<tr>
+  	    <th>ID</th>
+        <th>Name</th>
+    </tr>
+    <tr th:each="listing: ${listings}">
+	    <td th:text="${listing.id}" />
+	    <td th:text="${listing.name}" />
+	</tr>
+</table>
+ 
+</body>
 </body>
 </html>

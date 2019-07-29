@@ -6,13 +6,29 @@
 </head>
 <body>
 <h1>
-	Deactivate Renter
+	Delete Renter
 </h1>
 
 <form action="/delRenter" method="POST">
 	<input type="text" name="SIN" placeholder="SIN">
-	<button>Deactivate Renter</button>
+	<button>Delete Renter</button>
 </form>
+
+ <h1>List of renters</h1>
+  <table>
+  	<tr>
+  	    <th>ID</th>
+        <th>Firstname</th>
+        <th>Lastname</th> 
+        <th>Active</th>
+    </tr>
+    <tr th:each="renter: ${renters}">
+	    <td th:text="${renter.id}" />
+	    <td th:text="${renter.first_name}" />
+	    <td th:text="${renter.last_name}" />
+	    <td th:text="${renter.active}" />
+	</tr>
+</table>
  
 </body>
 </html>
